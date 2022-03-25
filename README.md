@@ -2,12 +2,12 @@
 
 *DISCLAIMER: This is alpha quality at best. Next steps will include proper packaging, refactoring testing etc*
 
-Once a package is uploaded to the Ubuntu archive (dput) it triggers a series of test and rebuilds across multiple package in the archive.
+Once a package is uploaded to the Ubuntu archive (dput) it triggers a series of tests and rebuilds across multiple packages in the archive.
 Said package won't be able to migrate until it has build properly and all its dependencies have had successfull tests
 
-This is a very simple view but this is what we call package migration
+This is a very simple view but this is what we call package migration.
 
-When a package does't migrate, one would wonder why? what is his excuse?
+When a package does't migrate, one would wonder why? what is its excuse?
 
 Browsing and looking at https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.html can give excellent insight and help resolve the problem right away but in a lot of case, it could takea long time to find why a package is not migrating due the amount of packages trying to migrate at the same time abd blocking each others
 
