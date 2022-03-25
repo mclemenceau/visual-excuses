@@ -28,7 +28,7 @@ https://pyvis.readthedocs.io/en/latest/
 First python requirements (we'll have setup.cfg nd all later, promise :))
 
 ```
-$> git clone .....
+$> git clone https://github.com/mclemenceau/visual-excuses.git
 $> pip install yaml
 $> pip install pyvis
 ```
