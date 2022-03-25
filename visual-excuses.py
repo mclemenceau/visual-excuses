@@ -1,4 +1,6 @@
-###############################################################################
+#!/usr/bin/env python
+
+# ###############################################################################
 # 1) Launchpad team information
 # package by team content is built from the page
 # http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.html
@@ -131,23 +133,20 @@ for item in all_excuses['sources']:
 ###############################################################################
 # 3) network graph drawing
 from pyvis.network import Network
-
-# https://htmlcolorcodes.com/color-chart/
-def age_color(old):
-    if old < 5:
-        return "#2ECC71"
-    if old < 15:
-        return "#F9E79F"
-    if old < 30:
-        return "#F5B041"
-    if old < 60:
-        return "#E74C3C"
-    if old < 90:
-        return "#922B21"
-
-    return "#641E16"
+import sys
 
 teams = list(packages_by_team.keys())
+
+team_choice = ''
+
+# yes yes argparse is much better, we'll do that later :)
+if len(sys.argv)>2 and sys.argv[1] == "--team":
+    team_choice = sys.argv[2]
+
+if team_choice not in teams:
+    print("No team specified we will show all excuses")
+else:
+    print("Showing excuses relevant to {} team".format(team_choice))
 
 default_color = '#FFFFFF'
 
@@ -155,7 +154,6 @@ visual_excuses = Network(height="768px", width="1024px", directed=True)
 
 autopkg_list = []
 
-team_choice = ''
 
 for item in excuses_data.values():
     current_package = item['name']
@@ -239,5 +237,7 @@ for item in excuses_data.values():
 
 
 print("%d packages with valid reason" % len(visual_excuses.get_nodes()))
+
+# visual_excuses.toggle_physics(False)
 visual_excuses.show("excuses.html")
 ###############################################################################
