@@ -38,6 +38,19 @@ for item in all_excuses['sources']:
     # We assume some of these keys are always present which won't be always
     # the case and may need to be checked for
     package = item['item-name']
+
+    # current known reasons for excuses
+    # [x] 'autopkgtest',
+    # [ ] 'source-ppa',
+    # [x] 'missingbuild'
+    # [ ] 'block',
+    # [ ] 'cruft',
+    # [ ] 'depends',
+    # [ ] 'implicit-dependency',
+    # [ ] 'linux-meta-not-ready',
+    # [ ] 'no-binaries'
+
+    reasons = item['reason']
     new = item['new-version']
     old = item['old-version']
 
@@ -48,36 +61,72 @@ for item in all_excuses['sources']:
         age = int(item['policy_info']['age']['current-age'])
 
     excuses = []
-    for excuse in item['excuses']:
-        if excuse.startswith("autopkgtest") and "Regression" in excuse:
-            autopkg = excuse[excuse.index("for")+4:excuse.index("/")]
-            excuses.append({'pkg':autopkg, 'dsc':excuse})
-
     missing_builds = ""
-    if 'missing-builds' in item:
-        missing_builds = item['missing-builds']["on-architectures"]
-
-    # This is for dependencies
     blocked_by=""
-    if 'dependencies' in item and 'blocked-by' in item['dependencies']:
-        blocked_by=item['dependencies']['blocked-by'][0]
+    migrate_after=""
+
+    best_reason=""
+
+    for reason in reasons:
+        if reason == 'autopkgtest':
+            test_progress = False
+            for excuse in item['excuses']:
+                if excuse.startswith("autopkgtest"):
+                    if "Regression" in excuse:
+                        autopkg = excuse[excuse.index("for")+4:excuse.index("/")]
+                        excuses.append({'pkg':autopkg, 'dsc':excuse})
+                    else:
+                        test_progress = True
+            # Only if there's actual failing autokpgtest
+            if excuses:
+                best_reason = 'autopkgtest'
+                break
+            if test_progress:
+                best_reason = 'waiting'
+                break
+
+        if reason == 'missingbuild':
+            missing_builds = item['missing-builds']["on-architectures"]
+            best_reason = 'missingbuild'
+            break
+
+        if reason == 'no-binaries':
+            missing_builds = ['no binaries on any arch']
+            best_reason = 'missingbuild'
+            break
+
+        if 'depends' in reasons or 'implicit-dependency' in reasons :
+            if 'dependencies' in item:
+                if 'blocked-by' in item['dependencies']:
+                    blocked_by=item['dependencies']['blocked-by'][0]
+                    best_reason = 'depends'
+            else:
+                best_reason = 'unknown'
+            break
+
+        # # At this point we might be able to catch the migrate_after
+        # if 'dependencies' in item and 'migrate-after' in item['dependencies']:
+        #     print(package)
+                    # migrate_after=item['dependencies']['migrate-after']
+                    # best_reason = 'migrate_after
+
 
     excuses_data[package] = {
         "name":package,
+        "reason":best_reason,
         "new-version":new,
         "old-version":old,
         "age":age,
         "autopkg-regression":excuses,
         "missing-builds":missing_builds,
-        "blocked-by":blocked_by
+        "blocked-by":blocked_by,
+        "migrate-after":migrate_after
     }
 
-    #TODO: what is item['dependencies']
 
-with open("excuses_data.json", 'w') as fp:
-    json.dump(excuses_data, fp, indent=2)
+# with open("excuses_data.json", 'w') as fp:
+#     json.dump(excuses_data, fp, indent=2)
 
-# exit(0)
 
 ###############################################################################
 # 3) network graph drawing
@@ -102,7 +151,7 @@ teams = list(packages_by_team.keys())
 
 default_color = '#FFFFFF'
 
-visual_excuses = Network(height="768px", width="1024px")
+visual_excuses = Network(height="768px", width="1024px", directed=True)
 
 autopkg_list = []
 
@@ -110,84 +159,85 @@ team_choice = ''
 
 for item in excuses_data.values():
     current_package = item['name']
-    if current_package == 'rust-rustc-version':
-        print("debug")
 
-    # When should we display a package on the map?
-    # Issues preventing migration
-    # [DONE] When it has failing autopkgtest?
-    # [DONE] Missing builds
-    # Blocked-by
-    # - Depends / RDepends
     teams = search_teams(current_package)
 
     # We only display this package if it belong to a specif team
     # or if we want all the teams (team_choice empty)
-    blocked_by = item['blocked-by']
-
 
     if not team_choice or team_choice in teams:
-        if  item['autopkg-regression'] \
-            or item['missing-builds'] \
-            or blocked_by:
-
-            if item['autopkg-regression']:
-                color = "#2E86C1"
-                details = "failing autopkgtest"
-            elif item['missing-builds']:
+        # Only display the Node if there's an actual reason
+        if  item['reason']:
+            if item['reason'] == 'autopkgtest':
+                color = "#AED6F1"
+                details = "autopkgtest depends failures"
+            elif item['reason'] == 'missingbuild':
                 color = "#CD6155"
                 details = "<b>Missing builds: </b> " + str(item['missing-builds'])
-            elif blocked_by:
+            elif item['reason'] == 'depends':
                 color = "#FAD7A0"
-                details = "Depends on " + blocked_by
+                details = "Blocked by " + item['blocked-by']
+            elif item['reason'] == 'migrate_after':
+                color = "#7DCEA0"
+                details = "Will migrate after" + item['migrate-after']
+            elif item['reason'] == 'waiting':
+                continue
             else:
+                details = "Unknown at this time"
                 color = default_color
 
-            # if the node already exist we only update the title
+            # if the node already exist now we know why
             if current_package in visual_excuses.get_nodes():
                 visual_excuses.get_node(current_package)['title'] = details
+                visual_excuses.get_node(current_package)['color'] = color
             else:
                 visual_excuses.add_node(
                     current_package,
                     label=current_package,
                     color=color,
                     title=details
-                )
+            )
 
             for team in teams:
                 if not team_choice or team == team_choice:
-                    visual_excuses.add_node(team,title=team, color="#8B8985", size=20)
+                    visual_excuses.add_node(team,
+                        title=team,
+                        color="#8B8985",
+                        size=20,
+                        shape='box')
                     visual_excuses.add_edge(team, current_package)
 
+            # Time to create dependencie autokgtest cards
             for excuse in item['autopkg-regression']:
                 if excuse['pkg'] != current_package:
                     visual_excuses.add_node(excuse['pkg'],
                         label=excuse['pkg'],
-                        title=excuse['dsc'])
+                        title=excuse['dsc'],
+                        color='#2E86C1')
                 else:
                     # self failing autopkgtest here, node already exists
-                    visual_excuses.get_node(current_package)['title'] = excuse['dsc']
+                    visual_excuses.get_node(current_package)\
+                        ['title'] = excuse['dsc']
+                    visual_excuses.get_node(current_package)\
+                        ['color'] = '#2E86C1'
 
                 visual_excuses.add_edge(
                     current_package,
                     excuse['pkg'],
                     color='#2E86C1')
 
-            if blocked_by:
+            if item['reason'] == 'depends':
                 visual_excuses.add_node(
-                    blocked_by,
-                    label=blocked_by,
+                    item['blocked-by'],
+                    label=item['blocked-by'],
                     title='Unknown Cause (for now)',
-                    color="#FAD7A0")
+                    color="#DC7633")
                 visual_excuses.add_edge(
                     current_package,
-                    blocked_by,
+                    item['blocked-by'],
                     color="#FAD7A0")
 
 
-        else:
-            print(current_package)
-
-print(len(visual_excuses.get_nodes()))
+print("%d packages with valid reason" % len(visual_excuses.get_nodes()))
 visual_excuses.show("excuses.html")
 ###############################################################################
