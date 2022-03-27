@@ -1,18 +1,8 @@
 name: visual-excuses
 base: core20
-version: '0.1'
-summary: |
-  Visual Graph Representation of Ubuntu Archive Proposed Migration Status
-description: |
-  When a package does't migrate, one would wonder why? what is its excuse?
-  Browsing and looking at https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.html can give excellent insight and help resolve the problem right away but in a lot of case, it could takea long time to find why a package is not migrating due the amount of packages trying to migrate at the same time abd blocking each others
-  Wouldn't it be great to have a visual representation of these excuses?
-  This tool leverage the excuses database located here https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.yaml.xz
-  This tool also uses the package per team mapping relevant to Canonical's internal teams which could help to show excuses per team. The content comes from http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.html
-  Finally this python program leverage pyvis python library
-  https://github.com/WestHealth/pyvis
-  https://pyvis.readthedocs.io/en/latest/lp-to-jira allows you to import bug from a launchpad project into a JIRA
-  project.
+version: '0.2'
+summary: Visual Graph Representation of Ubuntu Archive Proposed Migration Status
+description: Create dynamique relation graph representing proposed migration
 grade: stable
 confinement: strict
 
@@ -29,10 +19,11 @@ parts:
     source: .
 
 apps:
-  lp-to-jira:
+  visual-excuses:
     command: bin/visual-excuses
     plugs:
       - network
       - home
     environment:
       LANG: C.UTF-8
+
