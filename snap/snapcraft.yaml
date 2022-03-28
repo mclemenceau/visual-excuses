@@ -24,6 +24,7 @@ apps:
     plugs:
       - network
       - home
+      - desktop
     environment:
       LANG: C.UTF-8
 
