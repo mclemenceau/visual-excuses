@@ -25,12 +25,18 @@ https://github.com/WestHealth/pyvis
 https://pyvis.readthedocs.io/en/latest/
 
 ## Installation
-First python requirements (we'll have setup.cfg nd all later, promise :))
+
+visual is available as a snap and installing it should be as simple as
+```
+$> snap install visual-excuses
+```
+
+Otherwise it can also be installer as a standard pip python package
 
 ```
 $> git clone https://github.com/mclemenceau/visual-excuses.git
-$> pip3 install yaml
-$> pip3 install pyvis
+$> cd visual-excuses
+$> pip3 install .
 ```
 
 ## Usage
