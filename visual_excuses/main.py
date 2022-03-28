@@ -9,13 +9,8 @@ import argparse
 
 from visual_excuses.packages_by_team import packages_by_team
 
-# ###############################################################################
-# 1) Launchpad team information
-# package by team content is built from the page
-# http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.html
-# then turned into a python dictionnary imported below
-# This is done rigth now by the script ./update-data.sh
-# TODO: maybe find a better more reliable way to get updated team/packages
+people_canonical = "https://people.canonical.com"
+excuses_root_url = people_canonical + "/~ubuntu-archive/proposed-migration/"
 
 def search_teams(package):
     teams=[]
@@ -26,10 +21,8 @@ def search_teams(package):
     return teams
 
 ###############################################################################
-# 2) excuses data
-# https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.yaml.xz
-# This data is download using the script ./update-data.sh as well
-# TODO: data could be downloaded directly in python, cached or something
+# excuses data
+# update_excuses.yaml.xz
 
 # we will load the excuse data into a simpler dictionnary that we will then
 # draw using pyvis toolkit, that way we can always change toolkit later
@@ -40,7 +33,8 @@ def consume_yaml_excuses():
     data = {}
 
     try:
-        yaml_excuses = lzma.open(urlopen("https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.yaml.xz"))
+        yaml_excuses = lzma.open(
+            urlopen(excuses_root_url+"/update_excuses.yaml.xz"))
     except:
         print("Couldn't download excuses.yaml")
 
@@ -166,12 +160,19 @@ def create_visual_excuses(data, team_choice=''):
         if not team_choice or team_choice in teams:
             # Only display the Node if there's an actual reason
             if  item['reason']:
+                unknown_details="Unknown at this time "\
+                        + "<a href="\
+                        + excuses_root_url\
+                        + "/update_excuses.html#"\
+                        + current_package +">"\
+                        + "see details</a>"
                 if item['reason'] == 'autopkgtest':
                     color = "#AED6F1"
                     details = "autopkgtest depends failures"
                 elif item['reason'] == 'missingbuild':
                     color = "#CD6155"
-                    details = "<b>Missing builds: </b> " + str(item['missing-builds'])
+                    details = "<b>Missing builds: </b> "\
+                        + str(item['missing-builds'])
                 elif item['reason'] == 'depends':
                     color = "#FAD7A0"
                     details = "Blocked by " + item['blocked-by']
@@ -181,7 +182,7 @@ def create_visual_excuses(data, team_choice=''):
                 elif item['reason'] == 'waiting':
                     continue
                 else:
-                    details = "Unknown at this time"
+                    details=unknown_details
                     color = default_color
 
                 # if the node already exist now we know why
@@ -228,7 +229,7 @@ def create_visual_excuses(data, team_choice=''):
                     visual_excuses.add_node(
                         item['blocked-by'],
                         label=item['blocked-by'],
-                        title='Unknown Cause (for now)',
+                        title=unknown_details,
                         color="#DC7633")
                     visual_excuses.add_edge(
                         current_package,
