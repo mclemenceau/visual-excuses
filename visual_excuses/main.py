@@ -261,7 +261,7 @@ def main(args=None):
     excuses_data = consume_yaml_excuses()
     graph = create_visual_excuses(excuses_data, opts.team)
 
-    print("%d packages with valid reason" % len(graph.get_nodes()))
+    print("%d packages with valid excuse" % len(graph.get_nodes()))
 
     # visual_excuses.toggle_physics(False)
     graph.show("excuses.html")
