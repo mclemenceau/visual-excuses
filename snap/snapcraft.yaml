@@ -2,7 +2,7 @@ name: visual-excuses
 base: core20
 version: '0.2'
 summary: Visual Graph Representation of Ubuntu Archive Proposed Migration Status
-description: Create dynamique relation graph representing proposed migration
+description: Create dynamic relation graph representing proposed migration
 grade: stable
 confinement: strict
 
