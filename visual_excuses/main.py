@@ -265,6 +265,7 @@ def main(args=None):
     print("%d packages with valid excuse" % len(graph.get_nodes()))
 
     # visual_excuses.toggle_physics(False)
+    graph.force_atlas_2based()
     graph.show("excuses.html")
 
     return 0
