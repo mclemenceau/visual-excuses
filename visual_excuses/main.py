@@ -256,6 +256,12 @@ def main(args=None):
         dest='team',
         help='Only shows specific team proposed migration')
 
+    opt_parser.add_argument(
+        '-s',
+        '--save',
+        dest='save',
+        help='save graph to a html file')
+
     opts = opt_parser.parse_args(args)
 
     excuses_data = {}
@@ -264,8 +270,10 @@ def main(args=None):
 
     print("%d packages with valid excuse" % len(graph.get_nodes()))
 
-    # visual_excuses.toggle_physics(False)
-    graph.force_atlas_2based()
+    if opts.save:
+        graph.save_graph(opts.save)
+        return 0
+
     graph.show("excuses.html")
 
     return 0
