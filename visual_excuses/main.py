@@ -134,7 +134,7 @@ def consume_yaml_excuses():
     return data
 
 
-def create_visual_excuses(data, team_choice=''):
+def create_visual_excuses(data, team_choice='', age=0):
     if not data:
         return None
 
@@ -158,6 +158,9 @@ def create_visual_excuses(data, team_choice=''):
         # or if we want all the teams (team_choice empty)
 
         if not team_choice or team_choice in teams:
+            # Don't display the node if it's younger than the --age flag
+            if item['age'] < age:
+                continue
             # Only display the Node if there's an actual reason
             if  item['reason']:
                 unknown_details="Unknown at this time "\
@@ -262,11 +265,18 @@ def main(args=None):
         dest='save',
         help='save graph to a html file')
 
+    opt_parser.add_argument(
+        '-a',
+        '--age',
+        dest='age',
+        type=int,
+        help='Only shows packages that have been in proposed for more than x days')
+
     opts = opt_parser.parse_args(args)
 
     excuses_data = {}
     excuses_data = consume_yaml_excuses()
-    graph = create_visual_excuses(excuses_data, opts.team)
+    graph = create_visual_excuses(excuses_data, opts.team, opts.age)
 
     print("%d packages with valid excuse" % len(graph.get_nodes()))
 
