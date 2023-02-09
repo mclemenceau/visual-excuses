@@ -159,7 +159,7 @@ def create_visual_excuses(data, team_choice='', age=0):
 
         if not team_choice or team_choice in teams:
             # Don't display the node if it's younger than the --age flag
-            if item['age'] < age:
+            if age and item['age'] < age:
                 continue
             # Only display the Node if there's an actual reason
             if  item['reason']:
