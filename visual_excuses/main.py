@@ -284,6 +284,6 @@ def main(args=None):
         graph.save_graph(opts.save)
         return 0
 
-    graph.show("excuses.html")
+    graph.show("excuses.html", notebook=False)
 
     return 0
