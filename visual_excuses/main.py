@@ -7,6 +7,8 @@ from urllib.request import urlopen
 import textwrap
 import argparse
 
+import re
+
 from visual_excuses.packages_by_team import packages_by_team
 
 people_canonical = "https://people.canonical.com"
@@ -73,6 +75,8 @@ def consume_yaml_excuses():
         missing_builds = ""
         blocked_by=""
         migrate_after=""
+        update_excuse_keys = item.get('policy_info', {}).get('update-excuse', {}).keys()
+        update_excuse_bugs = [int(s) for s in update_excuse_keys if re.match('^\d+$', s)]
 
         best_reason=""
 
@@ -129,7 +133,8 @@ def consume_yaml_excuses():
             "autopkg-regression":excuses,
             "missing-builds":missing_builds,
             "blocked-by":blocked_by,
-            "migrate-after":migrate_after
+            "migrate-after":migrate_after,
+            "update-excuse-bugs": update_excuse_bugs,
         }
     return data
 
@@ -161,6 +166,12 @@ def create_visual_excuses(data, team_choice='', age=0):
             # Don't display the node if it's younger than the --age flag
             if age and item['age'] < age:
                 continue
+            if item['update-excuse-bugs']:
+                bugs = ", ".join([f'<a href="https://bugs.launchpad.net/bugs/{bug}">{bug}</a>' for bug in item['update-excuse-bugs']])
+                bugs = f"<br />More info in {bugs}."
+            else:
+                bugs = ""
+
             # Only display the Node if there's an actual reason
             if  item['reason']:
                 unknown_details="Unknown at this time "\
@@ -188,6 +199,8 @@ def create_visual_excuses(data, team_choice='', age=0):
                     details=unknown_details
                     color = default_color
 
+                details += bugs
+
                 # if the node already exist now we know why
                 if current_package in visual_excuses.get_nodes():
                     visual_excuses.get_node(current_package)['title'] = details
@@ -214,12 +227,12 @@ def create_visual_excuses(data, team_choice='', age=0):
                     if excuse['pkg'] != current_package:
                         visual_excuses.add_node(excuse['pkg'],
                             label=excuse['pkg'],
-                            title=excuse['dsc'],
+                            title=excuse['dsc'] + bugs,
                             color='#2E86C1')
                     else:
                         # self failing autopkgtest here, node already exists
                         visual_excuses.get_node(current_package)\
-                            ['title'] = excuse['dsc']
+                            ['title'] = excuse['dsc'] + bugs
                         visual_excuses.get_node(current_package)\
                             ['color'] = '#2E86C1'
 
