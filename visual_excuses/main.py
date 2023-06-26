@@ -167,7 +167,7 @@ def create_visual_excuses(data, team_choice='', age=0):
             if age and item['age'] < age:
                 continue
             if item['update-excuse-bugs']:
-                bugs = ", ".join([f'<a href="https://pad.lv/{bug}">{bug}</a>' for bug in item['update-excuse-bugs']])
+                bugs = ", ".join([f'<a href="https://bugs.launchpad.net/bugs/{bug}">{bug}</a>' for bug in item['update-excuse-bugs']])
                 bugs = f"<br />More info in {bugs}."
             else:
                 bugs = ""
