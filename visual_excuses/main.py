@@ -152,7 +152,7 @@ def create_visual_excuses(data, team_choice='', age=0):
 
     default_color = '#FFFFFF'
 
-    visual_excuses = Network(height="768px", width="1024px", directed=True)
+    visual_excuses = Network(height="100vh", width="100vw", directed=True)
 
     for item in data.values():
         current_package = item['name']
