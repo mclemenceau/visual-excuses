@@ -181,7 +181,7 @@ def create_visual_excuses(data, team_choice='', age=0):
                         + current_package +">"\
                         + "see details</a>"
                 if item['reason'] == 'autopkgtest':
-                    color = "#AED6F1"
+                    color = "#DBBF60"
                     details = "autopkgtest depends failures"
                 elif item['reason'] == 'missingbuild':
                     color = "#CD6155"
@@ -228,13 +228,13 @@ def create_visual_excuses(data, team_choice='', age=0):
                         visual_excuses.add_node(excuse['pkg'],
                             label=excuse['pkg'],
                             title=excuse['dsc'] + bugs,
-                            color='#2E86C1')
+                            color='#d4713b')
                     else:
                         # self failing autopkgtest here, node already exists
                         visual_excuses.get_node(current_package)\
                             ['title'] = excuse['dsc'] + bugs
                         visual_excuses.get_node(current_package)\
-                            ['color'] = '#2E86C1'
+                            ['color'] = '#d4713b'
 
                     visual_excuses.add_edge(
                         current_package,
