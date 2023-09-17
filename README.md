@@ -40,17 +40,15 @@ $> pip3 install .
 ```
 
 ## Usage
-First need to refresh the data manually for now, we'll automate that in the future
-```
-$> ./update-data.sh
-```
-This script downloads the latest yaml excuses file
-
 Then run visual-excuses for all team or one specific team
 ```
-$> ./visual-excuses.py
-
-$> ./visual-excuses.py --team foundations-bugs
+$> visual-excuses
+$> visual-excuses --team foundations-bugs
+```
+If you want to list available team
+```
+$> visual-excuses
+$> visual-excuses --list-team
 ```
 
 ## Legend
