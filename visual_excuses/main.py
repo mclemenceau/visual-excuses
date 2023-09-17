@@ -3,13 +3,17 @@ from pyvis.network import Network
 import yaml
 import lzma
 from urllib.request import urlopen
+import requests
 
 import textwrap
 import argparse
 
 import re
 
-from visual_excuses.packages_by_team import packages_by_team
+packages_by_team = {}
+
+teampkgs =\
+    'https://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.json'
 
 people_canonical = "https://people.canonical.com"
 excuses_root_url = people_canonical + "/~ubuntu-archive/proposed-migration/"
@@ -257,6 +261,8 @@ def create_visual_excuses(data, team_choice='', age=0):
 
 
 def main(args=None):
+    global packages_by_team
+
     opt_parser = argparse.ArgumentParser(
         description="Propposed Migration excuses Visualizer",
         formatter_class=argparse.RawTextHelpFormatter,
@@ -266,6 +272,13 @@ def main(args=None):
             visual-excuses --team foundations-bugs
         ''')
     )
+    opt_parser.add_argument(
+        '-l',
+        '--list-team',
+        dest='list_team',
+        action='store_true',
+        help='List Ubuntu Distro teams')
+
     opt_parser.add_argument(
         '-t',
         '--team',
@@ -286,6 +299,20 @@ def main(args=None):
         help='Only shows packages that have been in proposed for more than x days')
 
     opts = opt_parser.parse_args(args)
+
+    # retrieve distro teams and packages information
+    print("refreshing distro teams and packages information")
+    response = requests.get(teampkgs)
+    if response.status_code == 200:
+        packages_by_team = response.json()
+    else:
+        print("Couldn't access team package information")
+        return 1
+
+    if opts.list_team:
+        for team in packages_by_team.keys():
+            print(team)
+        return 0
 
     excuses_data = {}
     excuses_data = consume_yaml_excuses()
