@@ -204,6 +204,8 @@ def create_visual_excuses(data, team_choice='', age=0):
                     color = default_color
 
                 details += bugs
+                details += f"<br />{item['age']} days old"
+                details += f'<br /><a href="https://launchpad.net/ubuntu/+source/{current_package}">{current_package}</a>'
 
                 # if the node already exist now we know why
                 if current_package in visual_excuses.get_nodes():
