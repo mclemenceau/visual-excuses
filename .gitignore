@@ -1,0 +1,7 @@
+.venv/
+.vscode/
+lib/
+visual_excuses.egg-info/
+*.egg
+Pipfile
+Pipfile.lock
