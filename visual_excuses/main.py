@@ -216,7 +216,8 @@ def create_visual_excuses(data, team_choice='', age=0):
                         current_package,
                         label=current_package,
                         color=color,
-                        title=details
+                        title=details,
+                        age=item['age'],
                 )
 
                 for team in teams:
