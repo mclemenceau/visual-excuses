@@ -156,7 +156,7 @@ def create_visual_excuses(data, team_choice='', age=0):
 
     default_color = '#FFFFFF'
 
-    visual_excuses = Network(height="100vh", width="100vw", directed=True)
+    visual_excuses = Network(height="100vh", width="100vw", directed=True, filter_menu=True)
 
     for item in data.values():
         current_package = item['name']
@@ -204,6 +204,8 @@ def create_visual_excuses(data, team_choice='', age=0):
                     color = default_color
 
                 details += bugs
+                details += f"<br />{item['age']} days old"
+                details += f'<br /><a href="https://launchpad.net/ubuntu/+source/{current_package}">{current_package}</a>'
 
                 # if the node already exist now we know why
                 if current_package in visual_excuses.get_nodes():
@@ -214,7 +216,8 @@ def create_visual_excuses(data, team_choice='', age=0):
                         current_package,
                         label=current_package,
                         color=color,
-                        title=details
+                        title=details,
+                        age=item['age'],
                 )
 
                 for team in teams:
