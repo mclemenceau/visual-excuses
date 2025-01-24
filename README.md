@@ -13,7 +13,7 @@ Browsing and looking at https://people.canonical.com/~ubuntu-archive/proposed-mi
 
 Wouldn't it be great to have a visual representation of these excuses?
 
-## indroducing visual-excuses
+## introducing visual-excuses
 
 This tool leverage the excuses database located here https://people.canonical.com/~ubuntu-archive/proposed-migration/update_excuses.yaml.xz
 
