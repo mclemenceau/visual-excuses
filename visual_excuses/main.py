@@ -3,6 +3,7 @@ import argparse
 import lzma
 import re
 import textwrap
+from typing import Optional
 from urllib.request import urlopen
 
 import requests
@@ -14,8 +15,11 @@ teampkgs = "http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.json"
 people_canonical = "https://people.canonical.com"
 excuses_root_url = people_canonical + "/~ubuntu-archive/proposed-migration/"
 
+ExcusesData = dict[str, dict[str, str | int | list[str] | list[int]]]
+PackagesByTeam = dict[str, list[str]]
 
-def search_teams(package, packages_by_team):
+
+def search_teams(package: str, packages_by_team: PackagesByTeam) -> list[str]:
     teams = []
     for k in packages_by_team:
         for v in packages_by_team[k]:
@@ -32,7 +36,7 @@ def search_teams(package, packages_by_team):
 # draw using pyvis toolkit, that way we can always change toolkit later
 
 
-def consume_yaml_excuses():
+def consume_yaml_excuses() -> ExcusesData:
     all_excuses = None
     data = {}
 
@@ -144,7 +148,12 @@ def consume_yaml_excuses():
     return data
 
 
-def create_visual_excuses(data, packages_by_team, team_choice="", age=0):
+def create_visual_excuses(
+    data: ExcusesData,
+    packages_by_team: PackagesByTeam,
+    team_choice: str = "",
+    age: int = 0,
+) -> Network:
     if not data:
         return None
 
@@ -273,7 +282,7 @@ def create_visual_excuses(data, packages_by_team, team_choice="", age=0):
 ###############################################################################
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     opt_parser = argparse.ArgumentParser(
         description="Propposed Migration excuses Visualizer",
         formatter_class=argparse.RawTextHelpFormatter,
