@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-from pyvis.network import Network
-import yaml
-import lzma
-from urllib.request import urlopen
-import requests
-
-import textwrap
 import argparse
-
+import lzma
 import re
+import textwrap
+from urllib.request import urlopen
 
-packages_by_team = {}
+import requests
+import yaml
+from pyvis.network import Network
 
 teampkgs = "http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.json"
 
@@ -18,7 +15,7 @@ people_canonical = "https://people.canonical.com"
 excuses_root_url = people_canonical + "/~ubuntu-archive/proposed-migration/"
 
 
-def search_teams(package):
+def search_teams(package, packages_by_team):
     teams = []
     for k in packages_by_team:
         for v in packages_by_team[k]:
@@ -147,7 +144,7 @@ def consume_yaml_excuses():
     return data
 
 
-def create_visual_excuses(data, team_choice="", age=0):
+def create_visual_excuses(data, packages_by_team, team_choice="", age=0):
     if not data:
         return None
 
@@ -167,7 +164,7 @@ def create_visual_excuses(data, team_choice="", age=0):
     for item in data.values():
         current_package = item["name"]
 
-        teams = search_teams(current_package)
+        teams = search_teams(current_package, packages_by_team)
 
         # We only display this package if it belong to a specif team
         # or if we want all the teams (team_choice empty)
@@ -277,8 +274,6 @@ def create_visual_excuses(data, team_choice="", age=0):
 
 
 def main(args=None):
-    global packages_by_team
-
     opt_parser = argparse.ArgumentParser(
         description="Propposed Migration excuses Visualizer",
         formatter_class=argparse.RawTextHelpFormatter,
@@ -330,8 +325,7 @@ def main(args=None):
 
     excuses_data = {}
     excuses_data = consume_yaml_excuses()
-    graph = create_visual_excuses(excuses_data, opts.team, opts.age)
-
+    graph = create_visual_excuses(excuses_data, packages_by_team, opts.team, opts.age)
     print("%d packages with valid excuse" % len(graph.get_nodes()))
 
     if opts.save:
