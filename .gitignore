@@ -5,3 +5,6 @@ visual_excuses.egg-info/
 *.egg
 Pipfile
 Pipfile.lock
+*/__pycache__
+*.pyc
+
