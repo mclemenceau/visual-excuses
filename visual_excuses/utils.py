@@ -277,8 +277,7 @@ def get_packages_by_team(teampkgs: str) -> PackagesByTeam:
 
 
 def list_teams(packages_by_team: PackagesByTeam):
-    for team in packages_by_team.keys():
-        print(team)
+    print("\n".join(packages_by_team))
 
 
 def generate_graph(
