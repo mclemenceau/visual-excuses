@@ -5,7 +5,7 @@ from urllib.request import urlopen
 
 import requests
 import yaml
-from custom_types import ExcusesData, PackagesByTeam
+from custom_types import ExcusesData, PackagesByTeam, UnprocessedExcusesData
 from errors import AccessError
 from pyvis.network import Network
 
@@ -27,20 +27,24 @@ def search_teams(package: str, packages_by_team: PackagesByTeam) -> list[str]:
 # draw using pyvis toolkit, that way we can always change toolkit later
 
 
-def consume_yaml_excuses(excuses_root_url: str) -> ExcusesData:
+def load_yaml_excuses(excuses_root_url: str) -> Optional[UnprocessedExcusesData]:
     all_excuses = None
-    data = {}
-
     try:
         yaml_excuses = lzma.open(urlopen(excuses_root_url + "/update_excuses.yaml.xz"))
     except:
         print("Couldn't download excuses.yaml")
+        return
 
     print("Loading update_excuses.yaml. (this could take a while)")
     all_excuses = yaml.load(yaml_excuses, Loader=yaml.CSafeLoader)
     print("%d packages found" % len(all_excuses["sources"]))
 
-    for item in all_excuses["sources"]:
+    return all_excuses
+
+
+def consume_yaml_excuses(unprocessed_excuses: UnprocessedExcusesData) -> ExcusesData:
+    data = {}
+    for item in unprocessed_excuses["sources"]:
         # We assume some of these keys are always present which won't be always
         # the case and may need to be checked for
         package = item["item-name"]
@@ -293,8 +297,8 @@ def generate_graph(
     age: int,
     filepath: Optional[str],
 ):
-    excuses_data = {}
-    excuses_data = consume_yaml_excuses(excuses_root_url)
+    unprocessed_excuses_data = load_yaml_excuses(excuses_root_url)
+    excuses_data = consume_yaml_excuses(unprocessed_excuses_data)
     graph = create_visual_excuses(
         excuses_data, excuses_root_url, packages_by_team, team, age
     )
