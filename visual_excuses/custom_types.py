@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-UnprocessedExcusesDataDeneratedDate = datetime
+UnprocessedExcusesDataGeneratedDate = datetime
 # {
 #     "component": str,
 #     "excuses": list[str],
@@ -63,7 +63,21 @@ UnprocessedExcusesDataSource = list[
 ]
 
 UnprocessedExcusesData = dict[
-    str, UnprocessedExcusesDataDeneratedDate | UnprocessedExcusesDataSource
+    str, UnprocessedExcusesDataGeneratedDate | UnprocessedExcusesDataSource
 ]
+# {
+#     str: {  # package
+#         "name": str,
+#         "reason": str,
+#         "new-version": str,
+#         "old-version": str,
+#         "age": int,
+#         "autopkg-regression": list[str],
+#         "missing-builds": str,
+#         "blocked-by": str,
+#         "migrate-after": str,
+#         "update-excuse-bugs": list[int],
+#     }
+# }
 ExcusesData = dict[str, dict[str, str | int | list[str] | list[int]]]
 PackagesByTeam = dict[str, list[str]]
