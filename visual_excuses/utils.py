@@ -18,26 +18,18 @@ def search_teams(package: str, packages_by_team: PackagesByTeam) -> list[str]:
     return teams
 
 
-###############################################################################
-# excuses data
-# update_excuses.yaml.xz
-
-# we will load the excuse data into a simpler dictionnary that we will then
-# draw using pyvis toolkit, that way we can always change toolkit later
-
-
 def load_yaml_excuses(excuses_root_url: str) -> Optional[UnprocessedExcusesData]:
+    # we will load the excuse data into a simpler dictionnary that we will then
+    # draw using pyvis toolkit, that way we can always change toolkit later
     all_excuses = None
     try:
         yaml_excuses = lzma.open(urlopen(excuses_root_url + "/update_excuses.yaml.xz"))
     except:
         print("Couldn't download excuses.yaml")
-        return
-
+        return 1
     print("Loading update_excuses.yaml. (this could take a while)")
     all_excuses = yaml.load(yaml_excuses, Loader=yaml.CSafeLoader)
-    print("%d packages found" % len(all_excuses["sources"]))
-
+    print(f"{len(all_excuses['sources'])} packages found")
     return all_excuses
 
 
