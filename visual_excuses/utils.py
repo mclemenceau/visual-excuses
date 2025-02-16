@@ -12,10 +12,9 @@ from pyvis.network import Network
 
 def search_teams(package: str, packages_by_team: PackagesByTeam) -> list[str]:
     teams = []
-    for k in packages_by_team:
-        for v in packages_by_team[k]:
-            if package == v:
-                teams.append(k)
+    for k, v in packages_by_team.items():
+        if package in v:
+            teams.append(k)
     return teams
 
 
