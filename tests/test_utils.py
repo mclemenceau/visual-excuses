@@ -7,6 +7,7 @@ from visual_excuses.custom_types import (
 )
 from visual_excuses.utils import (
     consume_yaml_excuses,
+    create_visual_excuses,
     search_teams,
 )
 
@@ -282,3 +283,246 @@ def test_consume_yaml_excuses(mock_unprocessed_excuses, mock_excuses_data):
     current = consume_yaml_excuses(mock_unprocessed_excuses)
     expected = mock_excuses_data
     assert current == expected
+
+
+def test_create_visual_excuses_all_teams_and_any_age(
+    mock_excuses_data, mock_packages_by_team
+):
+    graph = create_visual_excuses(
+        mock_excuses_data, "mock_url.com/tests", mock_packages_by_team
+    )
+    current_nodes = graph.nodes
+    current_edges = graph.edges
+    expected_nodes = [
+        {
+            "color": "#DBBF60",
+            "title": 'autopkgtest depends failures<br />More info in <a href="https://bugs.launchpad.net/bugs/101010">101010</a>.<br />42 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-0">package-name-0</a>',
+            "age": 42,
+            "id": "package-name-0",
+            "label": "package-name-0",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-3",
+            "size": 20,
+            "id": "team-3",
+            "label": "team-3",
+            "shape": "box",
+        },
+        {
+            "color": "#d4713b",
+            "title": "autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href=\"https://bugs.launchpad.net/bugs/101010\">101010</a>.",
+            "id": "some-package",
+            "label": "some-package",
+            "shape": "dot",
+        },
+        {
+            "color": "#CD6155",
+            "title": "<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href=\"https://launchpad.net/ubuntu/+source/package-name-2\">package-name-2</a>",
+            "age": 5,
+            "id": "package-name-2",
+            "label": "package-name-2",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-2",
+            "size": 20,
+            "id": "team-2",
+            "label": "team-2",
+            "shape": "box",
+        },
+        {
+            "color": "#CD6155",
+            "title": '<b>Missing builds: </b> [\'no binaries on any arch\']<br />More info in <a href="https://bugs.launchpad.net/bugs/123456">123456</a>.<br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-3">package-name-3</a>',
+            "age": 0,
+            "id": "package-name-3",
+            "label": "package-name-3",
+            "shape": "dot",
+        },
+        {
+            "color": "#FAD7A0",
+            "title": 'Blocked by ocaml<br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-4">package-name-4</a>',
+            "age": 0,
+            "id": "package-name-4",
+            "label": "package-name-4",
+            "shape": "dot",
+        },
+        {
+            "color": "#DC7633",
+            "title": "Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-4>see details</a>",
+            "id": "ocaml",
+            "label": "ocaml",
+            "shape": "dot",
+        },
+        {
+            "color": "#FFFFFF",
+            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-5>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
+            "age": 0,
+            "id": "package-name-5",
+            "label": "package-name-5",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-0",
+            "size": 20,
+            "id": "team-0",
+            "label": "team-0",
+            "shape": "box",
+        },
+        {
+            "color": "#FAD7A0",
+            "title": 'Blocked by coq<br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-6">package-name-6</a>',
+            "age": 0,
+            "id": "package-name-6",
+            "label": "package-name-6",
+            "shape": "dot",
+        },
+        {
+            "color": "#DC7633",
+            "title": "Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-6>see details</a>",
+            "id": "coq",
+            "label": "coq",
+            "shape": "dot",
+        },
+        {
+            "color": "#FFFFFF",
+            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-7>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
+            "age": 0,
+            "id": "package-name-7",
+            "label": "package-name-7",
+            "shape": "dot",
+        },
+    ]
+    expected_edges = [
+        {"from": "team-3", "to": "package-name-0", "arrows": "to"},
+        {
+            "color": "#2E86C1",
+            "from": "package-name-0",
+            "to": "some-package",
+            "arrows": "to",
+        },
+        {"from": "team-2", "to": "package-name-2", "arrows": "to"},
+        {"from": "team-2", "to": "package-name-3", "arrows": "to"},
+        {"from": "team-3", "to": "package-name-4", "arrows": "to"},
+        {"color": "#FAD7A0", "from": "package-name-4", "to": "ocaml", "arrows": "to"},
+        {"from": "team-0", "to": "package-name-5", "arrows": "to"},
+        {"from": "team-3", "to": "package-name-6", "arrows": "to"},
+        {"color": "#FAD7A0", "from": "package-name-6", "to": "coq", "arrows": "to"},
+        {"from": "team-0", "to": "package-name-7", "arrows": "to"},
+    ]
+    assert len(current_nodes) == 13
+    assert current_nodes == expected_nodes
+    assert len(current_edges) == 10
+    assert current_edges == expected_edges
+
+
+def test_create_visual_excuses_single_team_and_any_age(
+    mock_excuses_data, mock_packages_by_team
+):
+    graph = create_visual_excuses(
+        mock_excuses_data, "mock_url.com/tests", mock_packages_by_team, "team-0"
+    )
+    current_nodes = graph.nodes
+    current_edges = graph.edges
+    expected_nodes = [
+        {
+            "color": "#FFFFFF",
+            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-5>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
+            "age": 0,
+            "id": "package-name-5",
+            "label": "package-name-5",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-0",
+            "size": 20,
+            "id": "team-0",
+            "label": "team-0",
+            "shape": "box",
+        },
+        {
+            "color": "#FFFFFF",
+            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-7>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
+            "age": 0,
+            "id": "package-name-7",
+            "label": "package-name-7",
+            "shape": "dot",
+        },
+    ]
+    expected_edges = [
+        {"from": "team-0", "to": "package-name-5", "arrows": "to"},
+        {"from": "team-0", "to": "package-name-7", "arrows": "to"},
+    ]
+    assert len(current_nodes) == 3
+    assert current_nodes == expected_nodes
+    assert len(current_edges) == 2
+    assert current_edges == expected_edges
+
+
+def test_create_visual_excuses_all_teams_and_older_than_1(
+    mock_excuses_data, mock_packages_by_team
+):
+    graph = create_visual_excuses(
+        mock_excuses_data, "mock_url.com/tests", mock_packages_by_team, age=1
+    )
+    current_nodes = graph.nodes
+    current_edges = graph.edges
+    expected_nodes = [
+        {
+            "color": "#DBBF60",
+            "title": 'autopkgtest depends failures<br />More info in <a href="https://bugs.launchpad.net/bugs/101010">101010</a>.<br />42 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-0">package-name-0</a>',
+            "age": 42,
+            "id": "package-name-0",
+            "label": "package-name-0",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-3",
+            "size": 20,
+            "id": "team-3",
+            "label": "team-3",
+            "shape": "box",
+        },
+        {
+            "color": "#d4713b",
+            "title": "autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href=\"https://bugs.launchpad.net/bugs/101010\">101010</a>.",
+            "id": "some-package",
+            "label": "some-package",
+            "shape": "dot",
+        },
+        {
+            "color": "#CD6155",
+            "title": "<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href=\"https://launchpad.net/ubuntu/+source/package-name-2\">package-name-2</a>",
+            "age": 5,
+            "id": "package-name-2",
+            "label": "package-name-2",
+            "shape": "dot",
+        },
+        {
+            "color": "#8B8985",
+            "title": "team-2",
+            "size": 20,
+            "id": "team-2",
+            "label": "team-2",
+            "shape": "box",
+        },
+    ]
+    expected_edges = [
+        {"from": "team-3", "to": "package-name-0", "arrows": "to"},
+        {
+            "color": "#2E86C1",
+            "from": "package-name-0",
+            "to": "some-package",
+            "arrows": "to",
+        },
+        {"from": "team-2", "to": "package-name-2", "arrows": "to"},
+    ]
+    assert len(current_nodes) == 5
+    assert current_nodes == expected_nodes
+    assert len(current_edges) == 3
+    assert current_edges == expected_edges
