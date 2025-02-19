@@ -14,45 +14,21 @@ from visual_excuses.utils import (
 @pytest.fixture
 def mock_packages_by_team() -> PackagesByTeam:
     return {
-        "canonical-mainstream": [
-            "oem-qemu-meta",
-            "oem-somerville-aipom-adl-meta",
-            "oem-somerville-arbok-meta",
-            "oem-somerville-arcanine-14-meta",
-            "oem-somerville-arcanine-meta",
-            "oem-somerville-beedrill-meta",
-            "oem-somerville-beric-amd-meta",
-            "oem-somerville-beric-icl-meta",
-            "oem-somerville-beric-tgl-meta",
-            "oem-somerville-blastoise-meta",
-            "oem-somerville-bowen-meta",
-            "oem-somerville-bronn-meta",
+        "team-0": [
+            "package-name-5",
+            "package-name-1",
+            "package-name-7",
         ],
-        "canonical-support": [],
-        "canonical-ubuntu-qa": [
-            "autopkgtest",
-            "openqa",
-            "os-autoinst",
-            "retry",
-            "alsa-driver",  # added to have multiple teams with same package
+        "team-1": [],
+        "team-2": [
+            "package-name-1",  # added to have multiple teams with same package
+            "package-name-2",
+            "package-name-3",
         ],
-        "desktop-packages": [
-            "aalib",
-            "abseil",
-            "accountsservice",
-            "adsys",
-            "adwaita-icon-theme",
-            "aisleriot",
-            "alsa-driver",
-            "alsa-plugins",
-            "alsa-utils",
-            "amtk",
-            "apg",
-            "appconfig",
-            "appstream",
-            "appstream-glib",
-            "aspell",
-            "aspell-en",
+        "team-3": [
+            "package-name-4",
+            "package-name-0",
+            "package-name-6",
         ],
     }
 
@@ -282,15 +258,15 @@ def mock_excuses_data() -> ExcusesData:
 
 
 def test_search_teams_multiple(mock_packages_by_team):
-    current = search_teams("alsa-driver", mock_packages_by_team)
-    expected = ["desktop-packages", "canonical-ubuntu-qa"]
+    current = search_teams("package-name-1", mock_packages_by_team)
+    expected = ["team-0", "team-2"]
     assert len(current) == 2
     assert set(current) == set(expected)
 
 
 def test_search_teams_single(mock_packages_by_team):
-    current = search_teams("oem-qemu-meta", mock_packages_by_team)
-    expected = ["canonical-mainstream"]
+    current = search_teams("package-name-0", mock_packages_by_team)
+    expected = ["team-3"]
     assert len(current) == 1
     assert current == expected
 
