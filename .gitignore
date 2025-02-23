@@ -9,4 +9,5 @@ Pipfile.lock
 *.pyc
 .pytest_cache
 *.log
+.coverage
 
