@@ -55,19 +55,14 @@ def consume_yaml_excuses(unprocessed_excuses: UnprocessedExcusesData) -> Excuses
         new = item["new-version"]
         old = item["old-version"]
 
-        age = 0
-        if (
-            "policy_info" in item
-            and "age" in item["policy_info"]
-            and "current-age" in item["policy_info"]["age"]
-        ):
-            age = int(item["policy_info"]["age"]["current-age"])
+        age = item.get("policy_info", {}).get("age", {}).get("current-age", 0.0)
+        age = int(age)
 
         excuses = []
         missing_builds = ""
         blocked_by = ""
         migrate_after = ""
-        update_excuse_keys = item.get("policy_info", {}).get("update-excuse", {}).keys()
+        update_excuse_keys = item.get("policy_info", {}).get("update-excuse", {})
         update_excuse_bugs = [
             int(s) for s in update_excuse_keys if re.match(r"^\d+$", s)
         ]
@@ -80,9 +75,7 @@ def consume_yaml_excuses(unprocessed_excuses: UnprocessedExcusesData) -> Excuses
                 for excuse in item["excuses"]:
                     if excuse.startswith("autopkgtest"):
                         if "Regression" in excuse:
-                            autopkg = excuse[
-                                excuse.index("for") + 4 : excuse.index("/")
-                            ]
+                            autopkg = re.search(r"for\s+(.*?)/", excuse).group(1)
                             excuses.append({"pkg": autopkg, "dsc": excuse})
                         else:
                             test_progress = True
@@ -149,9 +142,9 @@ def create_visual_excuses(
     if team_choice not in teams:
         print("No team specified we will show all excuses")
     else:
-        print("Showing excuses relevant to {} team".format(team_choice))
+        print(f"Showing excuses relevant to {team_choice} team")
 
-    default_color = "#FFFFFF"
+    default_color = "#FFFFFF"  # white
 
     visual_excuses = Network(
         height="100vh", width="100vw", directed=True, filter_menu=True
@@ -182,54 +175,51 @@ def create_visual_excuses(
 
             # Only display the Node if there's an actual reason
             if item["reason"]:
-                unknown_details = (
-                    "Unknown at this time "
-                    + "<a href="
-                    + excuses_root_url
-                    + "/update_excuses.html#"
-                    + current_package
-                    + ">"
-                    + "see details</a>"
-                )
+                unknown_reason = f'Unknown at this time <a href="{excuses_root_url}/update_excuses.html#{current_package}">see details</a>'
+
                 if item["reason"] == "autopkgtest":
-                    color = "#DBBF60"
-                    details = "autopkgtest depends failures"
+                    color = "#DBBF60"  # beige
+                    reason_detail = "autopkgtest depends failures"
                 elif item["reason"] == "missingbuild":
-                    color = "#CD6155"
-                    details = "<b>Missing builds: </b> " + str(item["missing-builds"])
+                    color = "#CD6155"  # light-red
+                    reason_detail = f"<b>Missing builds: </b> {item['missing-builds']}"
                 elif item["reason"] == "depends":
-                    color = "#FAD7A0"
-                    details = "Blocked by " + item["blocked-by"]
+                    color = "#FAD7A0"  # light-yellow
+                    reason_detail = f"Blocked by {item['blocked-by']}"
                 elif item["reason"] == "migrate_after":
-                    color = "#7DCEA0"
-                    details = "Will migrate after" + item["migrate-after"]
+                    color = "#7DCEA0"  # light-green
+                    reason_detail = f"Will migrate after {item['migrate-after']}"
                 elif item["reason"] == "waiting":
                     continue
                 else:
-                    details = unknown_details
+                    reason_detail = unknown_reason
                     color = default_color
 
-                details += bugs
-                details += f"<br />{item['age']} days old"
-                details += f'<br /><a href="https://launchpad.net/ubuntu/+source/{current_package}">{current_package}</a>'
+                detail_age = f"<br />{item['age']} days old"
+                detail_link = f'<br /><a href="https://launchpad.net/ubuntu/+source/{current_package}">{current_package}</a>'
+                full_details = f"{reason_detail}{bugs}{detail_age}{detail_link}"
 
                 # if the node already exist now we know why
                 if current_package in visual_excuses.get_nodes():
-                    visual_excuses.get_node(current_package)["title"] = details
+                    visual_excuses.get_node(current_package)["title"] = full_details
                     visual_excuses.get_node(current_package)["color"] = color
                 else:
                     visual_excuses.add_node(
                         current_package,
                         label=current_package,
                         color=color,
-                        title=details,
+                        title=full_details,
                         age=item["age"],
                     )
 
                 for team in teams:
                     if not team_choice or team == team_choice:
                         visual_excuses.add_node(
-                            team, title=team, color="#8B8985", size=20, shape="box"
+                            team,
+                            title=team,
+                            color="#8B8985",  # gray
+                            size=20,
+                            shape="box",
                         )
                         visual_excuses.add_edge(team, current_package)
 
@@ -239,29 +229,35 @@ def create_visual_excuses(
                         visual_excuses.add_node(
                             excuse["pkg"],
                             label=excuse["pkg"],
-                            title=excuse["dsc"] + bugs,
-                            color="#d4713b",
+                            title=f"{excuse['dsc']}{bugs}",
+                            color="#D4713B",  # orange
                         )
                     else:
                         # self failing autopkgtest here, node already exists
                         visual_excuses.get_node(current_package)["title"] = (
-                            excuse["dsc"] + bugs
+                            f"{excuse['dsc']}{bugs}"
                         )
-                        visual_excuses.get_node(current_package)["color"] = "#d4713b"
+                        visual_excuses.get_node(current_package)["color"] = (
+                            "#D4713B"  # orange
+                        )
 
                     visual_excuses.add_edge(
-                        current_package, excuse["pkg"], color="#2E86C1"
+                        current_package,
+                        excuse["pkg"],
+                        color="#2E86C1",  # light-blue
                     )
 
                 if item["reason"] == "depends":
                     visual_excuses.add_node(
                         item["blocked-by"],
                         label=item["blocked-by"],
-                        title=unknown_details,
-                        color="#DC7633",
+                        title=unknown_reason,
+                        color="#DC7633",  # orange
                     )
                     visual_excuses.add_edge(
-                        current_package, item["blocked-by"], color="#FAD7A0"
+                        current_package,
+                        item["blocked-by"],
+                        color="#FAD7A0",  # light-yellow
                     )
     return visual_excuses
 

@@ -311,15 +311,15 @@ def test_create_visual_excuses_all_teams_and_any_age(
             "shape": "box",
         },
         {
-            "color": "#d4713b",
-            "title": "autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href=\"https://bugs.launchpad.net/bugs/101010\">101010</a>.",
+            "color": "#D4713B",
+            "title": """autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href="https://bugs.launchpad.net/bugs/101010">101010</a>.""",
             "id": "some-package",
             "label": "some-package",
             "shape": "dot",
         },
         {
             "color": "#CD6155",
-            "title": "<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href=\"https://launchpad.net/ubuntu/+source/package-name-2\">package-name-2</a>",
+            "title": """<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-2">package-name-2</a>""",
             "age": 5,
             "id": "package-name-2",
             "label": "package-name-2",
@@ -335,7 +335,7 @@ def test_create_visual_excuses_all_teams_and_any_age(
         },
         {
             "color": "#CD6155",
-            "title": '<b>Missing builds: </b> [\'no binaries on any arch\']<br />More info in <a href="https://bugs.launchpad.net/bugs/123456">123456</a>.<br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-3">package-name-3</a>',
+            "title": """<b>Missing builds: </b> ['no binaries on any arch']<br />More info in <a href="https://bugs.launchpad.net/bugs/123456">123456</a>.<br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-3">package-name-3</a>""",
             "age": 0,
             "id": "package-name-3",
             "label": "package-name-3",
@@ -351,14 +351,14 @@ def test_create_visual_excuses_all_teams_and_any_age(
         },
         {
             "color": "#DC7633",
-            "title": "Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-4>see details</a>",
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-4">see details</a>',
             "id": "ocaml",
             "label": "ocaml",
             "shape": "dot",
         },
         {
             "color": "#FFFFFF",
-            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-5>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-5">see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
             "age": 0,
             "id": "package-name-5",
             "label": "package-name-5",
@@ -382,14 +382,14 @@ def test_create_visual_excuses_all_teams_and_any_age(
         },
         {
             "color": "#DC7633",
-            "title": "Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-6>see details</a>",
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-6">see details</a>',
             "id": "coq",
             "label": "coq",
             "shape": "dot",
         },
         {
             "color": "#FFFFFF",
-            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-7>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-7">see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
             "age": 0,
             "id": "package-name-7",
             "label": "package-name-7",
@@ -430,7 +430,7 @@ def test_create_visual_excuses_single_team_and_any_age(
     expected_nodes = [
         {
             "color": "#FFFFFF",
-            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-5>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-5">see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-5">package-name-5</a>',
             "age": 0,
             "id": "package-name-5",
             "label": "package-name-5",
@@ -446,7 +446,7 @@ def test_create_visual_excuses_single_team_and_any_age(
         },
         {
             "color": "#FFFFFF",
-            "title": 'Unknown at this time <a href=mock_url.com/tests/update_excuses.html#package-name-7>see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
+            "title": 'Unknown at this time <a href="mock_url.com/tests/update_excuses.html#package-name-7">see details</a><br />0 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-7">package-name-7</a>',
             "age": 0,
             "id": "package-name-7",
             "label": "package-name-7",
@@ -489,15 +489,15 @@ def test_create_visual_excuses_all_teams_and_older_than_1(
             "shape": "box",
         },
         {
-            "color": "#d4713b",
-            "title": "autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href=\"https://bugs.launchpad.net/bugs/101010\">101010</a>.",
+            "color": "#D4713B",
+            "title": """autopkgtest for some-package/0.42: very long description that includes the word 'Regression'.<br />More info in <a href="https://bugs.launchpad.net/bugs/101010">101010</a>.""",
             "id": "some-package",
             "label": "some-package",
             "shape": "dot",
         },
         {
             "color": "#CD6155",
-            "title": "<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href=\"https://launchpad.net/ubuntu/+source/package-name-2\">package-name-2</a>",
+            "title": """<b>Missing builds: </b> ['amd64', 'arm64']<br />5 days old<br /><a href="https://launchpad.net/ubuntu/+source/package-name-2">package-name-2</a>""",
             "age": 5,
             "id": "package-name-2",
             "label": "package-name-2",
