@@ -75,7 +75,9 @@ def consume_yaml_excuses(unprocessed_excuses: UnprocessedExcusesData) -> Excuses
                 for excuse in item["excuses"]:
                     if excuse.startswith("autopkgtest"):
                         if "Regression" in excuse:
-                            autopkg = re.search(r"for\s+(.*?)/", excuse).group(1)
+                            autopkg = excuse[
+                                excuse.index("for") + 4 : excuse.index("/")
+                            ]
                             excuses.append({"pkg": autopkg, "dsc": excuse})
                         else:
                             test_progress = True
