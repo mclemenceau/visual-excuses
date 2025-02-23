@@ -113,10 +113,10 @@ def consume_yaml_excuses(unprocessed_excuses: UnprocessedExcusesData) -> Excuses
                 break
 
             # # At this point we might be able to catch the migrate_after
-            # if 'dependencies' in item and 'migrate-after' in item['dependencies']:
+            # if "dependencies" in item and "migrate-after" in item["dependencies"]:
             #     print(package)
-            # migrate_after=item['dependencies']['migrate-after']
-            # best_reason = 'migrate_after
+            #     migrate_after = item["dependencies"]["migrate-after"]
+            #     best_reason = "migrate_after"
 
         data[package] = {
             "name": package,
@@ -231,7 +231,7 @@ def create_visual_excuses(
                         )
                         visual_excuses.add_edge(team, current_package)
 
-                # Time to create dependencie autokgtest cards
+                # Time to create dependencies autokgtest cards
                 for excuse in item["autopkg-regression"]:
                     if excuse["pkg"] != current_package:
                         visual_excuses.add_node(
