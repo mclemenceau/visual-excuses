@@ -1,0 +1,24 @@
+[project]
+name = "visual-excuses"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pyvis>=0.3.2",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov"
+testpaths = [
+    "tests"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
