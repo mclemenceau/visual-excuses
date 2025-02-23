@@ -7,11 +7,12 @@ class Options:
     team: str
     save: str
     age: int
+    log_file: str
 
 
 def get_arg_parser() -> argparse.ArgumentParser:
     opt_parser = argparse.ArgumentParser(
-        description="Propposed Migration excuses Visualizer",
+        description="Proposed Migration excuses Visualizer",
         formatter_class=argparse.RawTextHelpFormatter,
         epilog=textwrap.dedent("""\
         Examples:
@@ -26,21 +27,29 @@ def get_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="List Ubuntu Distro teams",
     )
-
     opt_parser.add_argument(
-        "-t", "--team", dest="team", help="Only shows specific team proposed migration"
+        "-t",
+        "--team",
+        dest="team",
+        help="Only shows specific team proposed migration",
     )
-
     opt_parser.add_argument(
-        "-s", "--save", dest="save", help="save graph to a html file"
+        "-s",
+        "--save",
+        dest="save",
+        help="save graph to a html file",
     )
-
     opt_parser.add_argument(
         "-a",
         "--age",
         dest="age",
         type=int,
         help="Only shows packages that have been in proposed for more than x days",
+    )
+    opt_parser.add_argument(
+        "--log-file",
+        dest="log_file",
+        help="File path to log file",
     )
 
     return opt_parser

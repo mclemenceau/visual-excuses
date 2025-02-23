@@ -1,12 +1,13 @@
 import lzma
 import re
+from logging import Logger
 from typing import Optional
 from urllib.request import urlopen
 
 import requests
 import yaml
 from custom_types import ExcusesData, PackagesByTeam, UnprocessedExcusesData
-from errors import AccessError
+from errors import RequestError
 from pyvis.network import Network
 
 
@@ -18,18 +19,21 @@ def search_teams(package: str, packages_by_team: PackagesByTeam) -> list[str]:
     return teams
 
 
-def load_yaml_excuses(excuses_root_url: str) -> Optional[UnprocessedExcusesData]:
-    # we will load the excuse data into a simpler dictionnary that we will then
+def load_yaml_excuses(
+    excuses_root_url: str, logger: Optional[Logger]
+) -> Optional[UnprocessedExcusesData]:
+    # we will load the excuse data into a simpler dictionary that we will then
     # draw using pyvis toolkit, that way we can always change toolkit later
     all_excuses = None
     try:
         yaml_excuses = lzma.open(urlopen(excuses_root_url + "/update_excuses.yaml.xz"))
-    except:
-        print("Couldn't download excuses.yaml")
-        return 1
-    print("Loading update_excuses.yaml. (this could take a while)")
+    except Exception:
+        raise
+    if logger:
+        logger.info("Loading update_excuses.yaml. (this could take a while)")
     all_excuses = yaml.load(yaml_excuses, Loader=yaml.CSafeLoader)
-    print(f"{len(all_excuses['sources'])} packages found")
+    if logger:
+        logger.info(f"{len(all_excuses['sources'])} packages found")
     return all_excuses
 
 
@@ -135,16 +139,18 @@ def create_visual_excuses(
     packages_by_team: PackagesByTeam,
     team_choice: str = "",
     age: int = 0,
+    logger: Optional[Logger] = None,
 ) -> Network:
     if not data:
         return None
 
     teams = list(packages_by_team.keys())
 
-    if team_choice not in teams:
-        print("No team specified we will show all excuses")
-    else:
-        print(f"Showing excuses relevant to {team_choice} team")
+    if logger:
+        if team_choice not in teams:
+            logger.info("No team specified we will show all excuses")
+        else:
+            logger.info(f"Showing excuses relevant to {team_choice} team")
 
     default_color = "#FFFFFF"  # white
 
@@ -264,14 +270,15 @@ def create_visual_excuses(
     return visual_excuses
 
 
-def get_packages_by_team(teampkgs: str) -> PackagesByTeam:
+def get_packages_by_team(teampkgs: str, logger: Optional[Logger]) -> PackagesByTeam:
     # retrieve distro teams and packages information
-    print("refreshing distro teams and packages information")
+    if logger:
+        logger.info("refreshing distro teams and packages information")
     response = requests.get(teampkgs)
     if response.status_code == 200:
         return response.json()
     else:
-        raise AccessError()
+        raise RequestError(response.status_code)
 
 
 def list_teams(packages_by_team: PackagesByTeam):
@@ -284,13 +291,15 @@ def generate_graph(
     team: str,
     age: int,
     filepath: Optional[str],
+    logger: Optional[Logger],
 ):
-    unprocessed_excuses_data = load_yaml_excuses(excuses_root_url)
+    unprocessed_excuses_data = load_yaml_excuses(excuses_root_url, logger)
     excuses_data = consume_yaml_excuses(unprocessed_excuses_data)
     graph = create_visual_excuses(
         excuses_data, excuses_root_url, packages_by_team, team, age
     )
-    print("%d packages with valid excuse" % len(graph.get_nodes()))
+    if logger:
+        logger.info(f"{len(graph.get_nodes())} packages with valid excuse")
 
     if filepath:
         graph.save_graph(filepath)
