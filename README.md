@@ -54,10 +54,18 @@ Control are fairly intuitive with the mouse to zoom in and out of the picture
 
  - **Arrows** : go in the direction of the problem, follow the arrow to find the reason a package isn't migrating
 
- - **Blue items**: represents autopkgtest failures related excuses, light blue means another package autopkgtest failure is blocking the migration. Dark blue mean this package autopkgtest are failing. Moving the mouse over the dot will show the exact failure and allow to click on hyperlink to go there.
+ - **Orange items**: represents autopkgtest failures related excuses. Moving the mouse over the dot will show the exact failure and allow to click on hyperlink to go there.
+ 
+ - **Yellow (ish) items** means another package autopkgtest failure is blocking the migration.
 
+ - **Beige items** Blocked by another item, follow the arrow.
+ 
+ - **White items** means the reason why it isn't migrating is unknown.
+ 
  - **Red items**: missing builds. moving the mouse over the dot will show which architecture are missings
 
+ - Note: These colors choices may not always be ideal, might have to change them in the future.
+ 
 ## Pictures
 
 Team view
@@ -68,5 +76,5 @@ Everything
 ![Everything](images/everything.png)
 
 
-A dependencie cluster around rust
+A dependencie cluster around tree-sitter
 ![cluster](images/cluster.png)
