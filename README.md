@@ -68,13 +68,11 @@ Control are fairly intuitive with the mouse to zoom in and out of the picture
  
 ## Pictures
 
-Team view
-![Team view](images/team.png)
-
-
 Everything
 ![Everything](images/everything.png)
 
+Team view
+![Team view](images/team.png)
 
 A dependencie cluster around tree-sitter
 ![cluster](images/cluster.png)
