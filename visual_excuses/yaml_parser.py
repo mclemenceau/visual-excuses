@@ -13,9 +13,15 @@ def load_excuses(file_path: str) -> List[Excuse]:
 
     Returns:
         List[Excuse]: A list of parsed Excuse objects.
+
+    Raises:
+    ValueError: If 'sources' key is missing or not a list.
     """
     with open(file_path, "r") as file:
         data = yaml.load(file, Loader=yaml.CSafeLoader)
+
+    if "sources" not in data:
+        raise ValueError("YAML file must contain a top-level 'sources' key.")
 
     excuses_list = []
 
