@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 
@@ -19,7 +19,7 @@ class Excuse:
     component: str
     new_version: str
     missing_builds: List[str]
-    reason: Optional[str] = ""
+    reason: List[str] = field(default_factory=list)
 
     def ftbfs(self) -> bool:
         """Check if excuse is an FTBFS excuse
