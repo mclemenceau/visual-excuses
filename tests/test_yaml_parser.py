@@ -11,10 +11,14 @@ VALID_YAML = {
             "item-name": "example",
             "component": "universe",
             "new-version": "1.0",
-            "missing-builds": ["amd64"]
+            "missing-builds": {
+                "on-architectures": ["amd64"],
+                "on-unimportant-architectures": []
+            }
         }
     ]
 }
+
 
 INVALID_YAML_CONTENT = """
 sources:
