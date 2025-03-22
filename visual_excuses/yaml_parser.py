@@ -20,9 +20,6 @@ def load_excuses(file_path: str) -> List[Excuse]:
     with open(file_path, "r") as file:
         data = yaml.load(file, Loader=yaml.CSafeLoader)
 
-    if "sources" not in data:
-        raise ValueError("YAML file must contain a top-level 'sources' key.")
-
     excuses_list = []
 
     for entry in data["sources"]:
