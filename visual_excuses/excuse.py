@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -10,14 +10,16 @@ class Excuse:
         item_name (str): The name of the package.
         component (str): The repository component (e.g., 'universe').
         new_version (str): The new version of the package.
-        missing_builds (List[str]): listof missing architectures build for that
+        missing_builds (List[str]): list of missing architectures build for that
             package
+        reason (str): The reason migration has failed
     """
 
     item_name: str
     component: str
     new_version: str
     missing_builds: List[str]
+    reason: Optional[str] = ""
 
     def ftbfs(self) -> bool:
         """Check if excuse is an FTBFS excuse
