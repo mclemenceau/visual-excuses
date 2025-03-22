@@ -23,6 +23,11 @@ def load_excuses(file_path: str) -> List[Excuse]:
     excuses_list = []
 
     for entry in data["sources"]:
+        raw_age = (
+            entry.get('policy_info', {})
+            .get('age', {})
+            .get('current-age')
+        )
         excuses_list.append(
             Excuse(
                 item_name=entry.get("item-name", ""),
@@ -31,7 +36,8 @@ def load_excuses(file_path: str) -> List[Excuse]:
                 missing_builds=(
                     entry.get("missing-builds", {}).get("on-architectures", [])
                 ),
-                reason=entry.get("reason", [])
+                reason=entry.get("reason", []),
+                age=int(raw_age) if raw_age is not None else 0
             )
         )
 

@@ -10,8 +10,7 @@ class Excuse:
         item_name (str): The name of the package.
         component (str): The repository component (e.g., 'universe').
         new_version (str): The new version of the package.
-        missing_builds (List[str]): list of missing architectures build for that
-            package
+        missing_builds (List[str]): list of missing architectures builds
         reason (str): The reason migration has failed
     """
 
@@ -20,6 +19,7 @@ class Excuse:
     new_version: str
     missing_builds: List[str]
     reason: List[str] = field(default_factory=list)
+    age: Optional[int] = 0
 
     def ftbfs(self) -> bool:
         """Check if excuse is an FTBFS excuse
