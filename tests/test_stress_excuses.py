@@ -8,7 +8,7 @@ EXCUSES_YAML = "tests/data/update_excuses.yaml"
 
 
 @pytest.mark.parametrize("excuse", load_excuses(EXCUSES_YAML))
-def test_ftbfs_consistency(excuse):
+def test_excuse_consistency(excuse):
     """Stress test ftbfs using real data."""
     result = excuse.ftbfs()
 
