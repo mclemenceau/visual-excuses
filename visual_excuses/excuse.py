@@ -16,6 +16,7 @@ class Excuse:
         excuse_bug (str) : LaunchPad bug relevant to that excuse
         blocked_by (str) : excuse blocking this excuse to migrate
         migrate_after (List) : excuses that need to migrate before this excuse
+        excuses (List) : Text List of all excuses (autopkgtest and dependencies)
     """
 
     item_name: str
@@ -27,6 +28,7 @@ class Excuse:
     excuse_bug: Optional[str] = ""
     blocked_by: Optional[str] = ""
     migrate_after: List[str] = field(default_factory=list)
+    excuses: List[str] = field(default_factory=list)
 
     def ftbfs(self) -> bool:
         """Check if excuse is an FTBFS excuse

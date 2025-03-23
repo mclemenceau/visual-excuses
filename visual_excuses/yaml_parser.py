@@ -50,7 +50,8 @@ def load_excuses(file_path: str) -> List[Excuse]:
                 ),
                 migrate_after=(
                     entry.get('dependencies', {}).get('migrate-after', [])
-                )
+                ),
+                excuses=entry.get("excuses", [])
             )
         )
 
