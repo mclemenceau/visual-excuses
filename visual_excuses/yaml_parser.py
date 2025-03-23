@@ -28,6 +28,10 @@ def load_excuses(file_path: str) -> List[Excuse]:
             .get('age', {})
             .get('current-age')
         )
+        bug = ""
+        for key in entry.get('policy_info', {}).get('update-excuse', {}).keys():
+            if key and key != "verdict":
+                bug = "LP: #" + key
         excuses_list.append(
             Excuse(
                 item_name=entry.get("item-name", ""),
@@ -37,7 +41,8 @@ def load_excuses(file_path: str) -> List[Excuse]:
                     entry.get("missing-builds", {}).get("on-architectures", [])
                 ),
                 reason=entry.get("reason", []),
-                age=int(raw_age) if raw_age is not None else 0
+                age=int(raw_age) if raw_age is not None else 0,
+                excuse_bug=bug
             )
         )
 
