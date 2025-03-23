@@ -3,7 +3,7 @@ import lzma
 from unittest.mock import patch, Mock
 
 from visual_excuses.excuse import Excuse
-from visual_excuses.ubuntu_excuses import load_ubuntu_excuses
+from visual_excuses.ubuntu_excuses_loader import load_ubuntu_excuses
 
 # Sample valid YAML content (as bytes)
 VALID_YAML = b"""
@@ -28,7 +28,9 @@ def mock_requests_get():
 @pytest.fixture
 def mock_load_excuses():
     """Fixture to mock load_excuses() instead of actually parsing YAML."""
-    with patch("visual_excuses.ubuntu_excuses.load_excuses") as mock_parser:
+    with patch(
+        "visual_excuses.ubuntu_excuses_loader.load_excuses"
+    ) as mock_parser:
         yield mock_parser
 
 
