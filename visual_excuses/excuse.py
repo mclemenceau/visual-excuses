@@ -13,7 +13,9 @@ class Excuse:
         missing_builds (List[str]): list of missing architectures builds
         reasons (str): The reason migration has failed
         age (int): How many days have this package been blocked
-        excuse_bug (int)
+        excuse_bug (str) : LaunchPad bug relevant to that excuse
+        blocked_by (str) : excuse blocking this excuse to migrate
+        migrate_after (List) : excuses that need to migrate before this excuse
     """
 
     item_name: str
@@ -23,6 +25,8 @@ class Excuse:
     reasons: List[str] = field(default_factory=list)
     age: Optional[int] = 0
     excuse_bug: Optional[str] = ""
+    blocked_by: Optional[str] = ""
+    migrate_after: List[str] = field(default_factory=list)
 
     def ftbfs(self) -> bool:
         """Check if excuse is an FTBFS excuse

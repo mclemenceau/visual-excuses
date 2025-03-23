@@ -42,7 +42,15 @@ def load_excuses(file_path: str) -> List[Excuse]:
                 ),
                 reasons=entry.get("reason", []),
                 age=int(raw_age) if raw_age is not None else 0,
-                excuse_bug=bug
+                excuse_bug=bug,
+                blocked_by=(
+                    entry.get("dependencies", {}).get("blocked-by", [])[0]
+                    if entry.get("dependencies", {}).get("blocked-by")
+                    else ""
+                ),
+                migrate_after=(
+                    entry.get('dependencies', {}).get('migrate-after', [])
+                )
             )
         )
 
