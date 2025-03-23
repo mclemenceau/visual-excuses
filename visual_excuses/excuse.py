@@ -11,7 +11,7 @@ class Excuse:
         component (str): The repository component (e.g., 'universe').
         new_version (str): The new version of the package.
         missing_builds (List[str]): list of missing architectures builds
-        reason (str): The reason migration has failed
+        reasons (str): The reason migration has failed
         age (int): How many days have this package been blocked
         excuse_bug (int)
     """
@@ -20,7 +20,7 @@ class Excuse:
     component: str
     new_version: str
     missing_builds: List[str]
-    reason: List[str] = field(default_factory=list)
+    reasons: List[str] = field(default_factory=list)
     age: Optional[int] = 0
     excuse_bug: Optional[str] = ""
 
