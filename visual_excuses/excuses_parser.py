@@ -30,6 +30,18 @@ class ExcusesParser:
             help="Regex to filter package names (case-insensitive)"
         )
 
+        self.parser.add_argument(
+            "--min-age",
+            type=int,
+            help="Only include packages at least this many days old"
+        )
+
+        self.parser.add_argument(
+            "--max-age",
+            type=int,
+            help="Only include packages no older than this many days"
+        )
+
     def parse_args(self, argv=None):
         self.args = self.parser.parse_args(argv)
         return self.args

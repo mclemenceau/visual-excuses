@@ -8,6 +8,7 @@ from visual_excuses.excuses_parser import ExcusesParser
 import json
 import re
 
+
 def main():
     """
     For now the main function will simply list all the excuses on Ubuntu Devel
@@ -20,8 +21,15 @@ def main():
     if args.ftbfs:
         excuses = [e for e in excuses if e.ftbfs()]
 
-    if args.limit:
-        excuses = excuses[:args.limit]
+    if args.min_age is not None:
+        excuses = [
+            e for e in excuses if e.age is not None and e.age >= args.min_age
+        ]
+
+    if args.max_age is not None:
+        excuses = [
+            e for e in excuses if e.age is not None and e.age <= args.max_age
+        ]
 
     if args.name:
         try:
@@ -30,6 +38,9 @@ def main():
         except re.error as e:
             print(f"Invalid regex pattern: {e}")
             return
+
+    if args.limit:
+        excuses = excuses[:args.limit]
 
     if args.json:
         print(json.dumps([e.__dict__ for e in excuses], indent=2))
