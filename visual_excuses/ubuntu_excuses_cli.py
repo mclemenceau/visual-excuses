@@ -6,7 +6,7 @@ from visual_excuses.table_visual import render_excuses_table
 from visual_excuses.excuses_parser import ExcusesParser
 
 import json
-
+import re
 
 def main():
     """
@@ -22,6 +22,14 @@ def main():
 
     if args.limit:
         excuses = excuses[:args.limit]
+
+    if args.name:
+        try:
+            pattern = re.compile(args.name, re.IGNORECASE)
+            excuses = [e for e in excuses if pattern.search(e.item_name)]
+        except re.error as e:
+            print(f"Invalid regex pattern: {e}")
+            return
 
     if args.json:
         print(json.dumps([e.__dict__ for e in excuses], indent=2))

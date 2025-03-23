@@ -24,6 +24,12 @@ class ExcusesParser:
             help="Limit the number of results shown"
         )
 
+        self.parser.add_argument(
+            "--name",
+            type=str,
+            help="Regex to filter package names (case-insensitive)"
+        )
+
     def parse_args(self, argv=None):
         self.args = self.parser.parse_args(argv)
         return self.args
