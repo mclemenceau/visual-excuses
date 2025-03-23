@@ -18,6 +18,18 @@ def main():
 
     excuses = load_ubuntu_excuses()
 
+    if args.inspect:
+        excuse = next(
+            (e for e in excuses if e.item_name == args.inspect), None
+        )
+        if excuse:
+            print(render_excuses_table([excuse]))
+            print(json.dumps(excuse.__dict__, indent=2))
+            return
+        else:
+            print(f"Excuse {args.inspect} can't be found in excuses list")
+            return
+
     if args.ftbfs:
         excuses = [e for e in excuses if e.ftbfs()]
 

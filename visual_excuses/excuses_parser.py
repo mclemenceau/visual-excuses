@@ -7,6 +7,12 @@ class ExcusesParser:
             description="Ubuntu Excuses (Proposed Migration) Viewer")
 
         self.parser.add_argument(
+            "--inspect",
+            type=str,
+            help="Get details about a specific package"
+        )
+
+        self.parser.add_argument(
             "--name",
             type=str,
             help="Regex to filter package names (case-insensitive)"
