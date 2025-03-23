@@ -12,6 +12,7 @@ class Excuse:
         new_version (str): The new version of the package.
         missing_builds (List[str]): list of missing architectures builds
         reason (str): The reason migration has failed
+        age (int): How many days have this package been blocked
     """
 
     item_name: str
