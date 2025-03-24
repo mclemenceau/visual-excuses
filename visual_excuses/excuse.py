@@ -16,7 +16,7 @@ class Excuse:
         excuse_bug (str) : LaunchPad bug relevant to that excuse
         blocked_by (str) : excuse blocking this excuse to migrate
         migrate_after (List) : excuses that need to migrate before this excuse
-        excuses (List) : Text List of all excuses (autopkgtest and dependencies)
+        excuses (List) : List of all excuses (autopkgtest and dependencies)
     """
 
     item_name: str

@@ -4,6 +4,7 @@
 from visual_excuses.ubuntu_excuses_loader import load_ubuntu_excuses
 from visual_excuses.table_visual import render_excuses_table
 from visual_excuses.excuses_parser import ExcusesParser
+from visual_excuses.ubuntu_teams import UbuntuTeamMapping
 
 import json
 import re
@@ -42,6 +43,17 @@ def main():
         excuses = [
             e for e in excuses if e.age is not None and e.age <= args.max_age
         ]
+
+    if args.team:
+        ubuntu_teams = UbuntuTeamMapping()
+        if args.team in ubuntu_teams.mapping:
+            excuses = [
+                e for e in excuses
+                if ubuntu_teams.default_team(e.item_name) == args.team
+            ]
+        else:
+            print(f"Team {args.team} is not a valid Ubuntu Team")
+            return
 
     if args.name:
         try:

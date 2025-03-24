@@ -19,6 +19,12 @@ class ExcusesParser:
         )
 
         self.parser.add_argument(
+            "--team",
+            type=str,
+            help="Show only packages subscribed by this Ubuntu team"
+        )
+
+        self.parser.add_argument(
             "--ftbfs",
             action="store_true",
             help="Show only FTBFS packages"
