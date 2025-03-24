@@ -71,6 +71,9 @@ def main():
     if args.limit:
         excuses = excuses[:args.limit]
 
+    if args.reverse:
+        excuses.reverse()
+
     if args.json:
         print(json.dumps([e.__dict__ for e in excuses], indent=2))
     else:

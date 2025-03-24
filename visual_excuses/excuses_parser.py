@@ -55,6 +55,12 @@ class ExcusesParser:
         )
 
         self.parser.add_argument(
+            "--reverse",
+            action="store_true",
+            help="Show excuses from older to more recent"
+        )
+
+        self.parser.add_argument(
             "--json",
             action="store_true",
             help="Output in JSON format"
