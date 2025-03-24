@@ -55,6 +55,11 @@ def main():
             print(f"Team {args.team} is not a valid Ubuntu Team")
             return
 
+    if args.component:
+        excuses = [
+            e for e in excuses if e.component == args.component
+        ]
+
     if args.name:
         try:
             pattern = re.compile(args.name, re.IGNORECASE)

@@ -19,6 +19,12 @@ class ExcusesParser:
         )
 
         self.parser.add_argument(
+            "--component",
+            type=str,
+            help="Archive component (main, restricted, universe, multivere)"
+        )
+
+        self.parser.add_argument(
             "--team",
             type=str,
             help="Show only packages subscribed by this Ubuntu team"
