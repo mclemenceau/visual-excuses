@@ -6,14 +6,21 @@ from tabulate import tabulate
 def render_excuses_table(excuses: List[Excuse]) -> str:
     """Render a list of Excuse objects as a table."""
 
-    headers = ["Days", "Package", "Component", "New Version", "FTBFS"]
+    headers = [
+            "Days",
+            "Package",
+            "Component",
+            "New Version",
+            "FTBFS",
+            "Excuse Bug"]
     rows = [
         [
             e.age,
             e.item_name,
             e.component,
             e.new_version,
-            "✅" if e.ftbfs() else ""
+            "✅" if e.ftbfs() else "",
+            e.excuse_bug
         ]
         for e in excuses
     ]
