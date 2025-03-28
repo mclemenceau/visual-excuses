@@ -36,6 +36,7 @@ def load_excuses(file_path: str) -> List[Excuse]:
             Excuse(
                 item_name=entry.get("item-name", ""),
                 component=entry.get("component", "main"),
+                old_version=str(entry.get("old-version", "")),
                 new_version=str(entry.get("new-version", "")),
                 missing_builds=(
                     entry.get("missing-builds", {}).get("on-architectures", [])

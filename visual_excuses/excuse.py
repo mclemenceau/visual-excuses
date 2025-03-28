@@ -9,6 +9,7 @@ class Excuse:
     Attributes:
         item_name (str): The name of the package.
         component (str): The repository component (e.g., 'universe').
+        old_version (str): The old version of the package.
         new_version (str): The new version of the package.
         missing_builds (List[str]): list of missing architectures builds
         reasons (str): The reason migration has failed
@@ -21,6 +22,7 @@ class Excuse:
 
     item_name: str
     component: str
+    old_version: str
     new_version: str
     missing_builds: List[str]
     reasons: List[str] = field(default_factory=list)

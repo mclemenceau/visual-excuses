@@ -8,6 +8,7 @@ def test_excuse_is_ftbfs_with_missing_builds():
     excuse = Excuse(
         item_name="example",
         component="universe",
+        old_version="1.1",
         new_version="1.2",
         missing_builds=["arm64", "ppc64el"]
     )
@@ -18,6 +19,7 @@ def test_excuse_is_not_ftbfs_with_no_missing_builds():
     excuse = Excuse(
         item_name="example",
         component="universe",
+        old_version="1.1",
         new_version="1.2",
         missing_builds=[]
     )

@@ -10,6 +10,7 @@ VALID_YAML = b"""
 sources:
 - component: universe
   item-name: example-package
+  old-version: 1.0
   new-version: 1.1
   missing-builds: []
 """
@@ -46,6 +47,7 @@ def test_load_ubuntu_excuses_success(mock_requests_get, mock_load_excuses):
         Excuse(
             item_name="example-package",
             component="universe",
+            old_version="1.0",
             new_version="1.1",
             missing_builds=[]
         ),
