@@ -1,8 +1,8 @@
-# ubuntu-excuses: simple command line tool allowing to manipulate current list 
-# of packages stuck in the proposed pocket and not migrating to Ubuntu Devel
+# visual-excuses: Show the list of excuses, packages stuck in proposed using
+# pyvis visualization
 
 from visual_excuses.ubuntu_excuses_loader import load_ubuntu_excuses
-from visual_excuses.table_visual import render_excuses_table
+from visual_excuses.pyvis_visual import visual_pyvis_excuses
 from visual_excuses.excuses_parser import ExcusesParser
 from visual_excuses.ubuntu_teams import UbuntuTeamMapping
 from visual_excuses.excuses_filter import filter_excuses
@@ -18,7 +18,7 @@ def main():
 
     excuses = filter_excuses(excuses, args, ubuntu_teams)
     if excuses:
-        print(render_excuses_table(excuses))
+        visual_pyvis_excuses(excuses, ubuntu_teams)
 
 
 if __name__ == "__main__":
