@@ -16,6 +16,7 @@ class Excuse:
         age (int): How many days have this package been blocked
         excuse_bug (str) : LaunchPad bug relevant to that excuse
         blocked_by (str) : excuse blocking this excuse to migrate
+        blocked_bug (str) : explicit block bug preventing migration
         migrate_after (List) : excuses that need to migrate before this excuse
         excuses (List) : List of all excuses (autopkgtest and dependencies)
     """
@@ -29,6 +30,7 @@ class Excuse:
     age: Optional[int] = 0
     excuse_bug: Optional[str] = ""
     blocked_by: Optional[str] = ""
+    block_bug: Optional[str] = ""
     migrate_after: List[str] = field(default_factory=list)
     excuses: List[str] = field(default_factory=list)
 
