@@ -1,6 +1,6 @@
 name: visual-excuses
-base: core20
-version: '0.4'
+base: core24
+version: '0.9'
 summary: Visual Graph Representation of Ubuntu Archive Proposed Migration Status
 description: Create dynamic relation graph representing proposed migration
 grade: stable
@@ -17,6 +17,7 @@ parts:
       - pyyaml
       - requests
       - pyvis
+      - tabulate
     source: .
 
 apps:

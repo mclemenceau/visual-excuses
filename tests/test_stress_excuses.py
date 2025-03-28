@@ -14,4 +14,6 @@ def test_excuse_consistency(excuse):
 
     # Check the ftbfs property matches the state of missing_builds
     assert isinstance(result, bool)
-    assert result == (len(excuse.missing_builds) > 0)
+    assert result == (
+        len(excuse.missing_builds) > 0 or 'no-binaries' in excuse.reasons
+    )

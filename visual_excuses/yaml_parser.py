@@ -28,26 +28,33 @@ def load_excuses(file_path: str) -> List[Excuse]:
             .get('age', {})
             .get('current-age')
         )
-        bug = ""
+        excuse_bug = ""
         for key in entry.get('policy_info', {}).get('update-excuse', {}).keys():
             if key and key != "verdict":
-                bug = "LP: #" + key
+                excuse_bug = "LP: #" + key
+        block_bug = ""
+        for key in entry.get('policy_info', {}).get('block-bugs', {}).keys():
+            if key and key != "verdict":
+                block_bug = "LP: #" + key
+        
         excuses_list.append(
             Excuse(
                 item_name=entry.get("item-name", ""),
                 component=entry.get("component", "main"),
+                old_version=str(entry.get("old-version", "")),
                 new_version=str(entry.get("new-version", "")),
                 missing_builds=(
                     entry.get("missing-builds", {}).get("on-architectures", [])
                 ),
                 reasons=entry.get("reason", []),
                 age=int(raw_age) if raw_age is not None else 0,
-                excuse_bug=bug,
+                excuse_bug=excuse_bug,
                 blocked_by=(
                     entry.get("dependencies", {}).get("blocked-by", [])[0]
                     if entry.get("dependencies", {}).get("blocked-by")
                     else ""
                 ),
+                block_bug=block_bug,
                 migrate_after=(
                     entry.get('dependencies', {}).get('migrate-after', [])
                 ),
