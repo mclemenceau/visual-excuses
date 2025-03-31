@@ -111,8 +111,6 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
             elif excuse.migrate_after:
                 for pkg in excuse.migrate_after:
                     details += f"<br/> - Requires {pkg} to migrate"
-            else:
-                print(f"{current} - {excuse.reasons}")
 
         # If there's an excuse bug, we display the excuse bug
         if excuse.block_bug:
