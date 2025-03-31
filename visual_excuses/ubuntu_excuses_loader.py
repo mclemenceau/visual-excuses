@@ -35,7 +35,10 @@ class CachedExcuses:
                 f"Status code: {response.status_code}"
             )
 
-        return response.headers['etag']
+        etag = response.headers['etag']
+        if not etag:
+            raise ValueError(f"ETag header missing from {self.url}")
+        return etag
 
     def _is_cache_valid(self, etag: str) -> bool: 
         """
@@ -89,7 +92,7 @@ def load_ubuntu_excuses(url: str = UBUNTU_EXCUSES_URL) -> List[Excuse]:
         List[Excuse]: A list of parsed Excuse objects.
     """
     try:
-        cache = CachedExcuses(UBUNTU_EXCUSES_URL)
+        cache = CachedExcuses(url)
 
         cache.update()
 
