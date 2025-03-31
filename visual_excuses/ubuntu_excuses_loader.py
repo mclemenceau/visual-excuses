@@ -1,9 +1,8 @@
 import requests
 import lzma
-import tempfile
 
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from visual_excuses.excuse import Excuse
 from visual_excuses.yaml_parser import load_excuses
@@ -21,44 +20,60 @@ class CachedExcuses:
     CachedExcuses will only download new excuses if the version in the cached
     folder is outdated
     """
-    def __init__(self, url: str):
+    def __init__(self, url: str, cache_dir: Optional[Path] = None):
         self.url = url
-        self.directory = Path(f"{Path.home()}/.excuses")
-        self.etag = Path(f"{self.directory}/ETag")
-        self.yaml = Path(f"{self.directory}/excuse.yaml")
+        self.directory = cache_dir or Path.home() / ".excuses"
+        self.etag = self.directory / "ETag"
+        self.yaml = self.directory / "excuse.yaml"
+
+    def _fetch_remote_etag(self) -> str:
+        # Grab the latest online etag
+        response = requests.head(self.url, allow_redirects=True)
+        if response.status_code != 200:
+            raise ConnectionError(
+                f"Failed to fetch etag from {self.url}. "
+                f"Status code: {response.status_code}"
+            )
+
+        return response.headers['etag']
+
+    def _is_cache_valid(self, etag: str) -> bool: 
+        """
+        Check if the local cache is valid and if an excuse file is present
+        """
+        if not self.etag.exists() or not self.yaml.exists():
+            return False
+
+        return self.etag.read_text() == etag
+
+    def _fetch_and_cache(self, etag: str):
+        """
+        Download the latest excuse and cache them
+        """
+
+        print(f"Downloading {self.url}")
+        response = requests.get(self.url, timeout=10)
+
+        if response.status_code != 200:
+            raise ConnectionError(
+                f"Failed to fetch excuses from {self.url}. "
+                f"Status code: {response.status_code}"
+            )
+
+        decompressed_yaml = lzma.decompress(response.content)
+
+        self.yaml.write_bytes(decompressed_yaml)
+        self.etag.write_text(etag)
 
     def update(self):
         """
         Check of the local cache need to be updated based on the ETag value
         """
-        # Check for the online tag version
-        response = requests.head(self.url, allow_redirects=True)
-        if response.status_code != 200:
-            raise ConnectionError(f"Failed to fetch excuses from {url}.\
-                Status code: {response.status_code}")
+        tag = self._fetch_remote_etag()
 
-        tag = response.headers['etag']
-
-        if not (
-            self.etag.exists() and
-            self.etag.read_text() == tag and
-            self.yaml.exists()
-        ):
-            if not self.directory.is_dir():
-                self.directory.mkdir()
-
-            print(f"Downloading {self.url}")
-            response = requests.get(self.url, timeout=10)
-
-            if response.status_code != 200:
-                raise ConnectionError(
-                    f"Failed to fetch excuses from {url}.\
-                        Status code: {response.status_code}")
-
-            decompressed_yaml = lzma.decompress(response.content)
-
-            self.yaml.write_bytes(decompressed_yaml)
-            self.etag.write_text(tag)
+        if not self._is_cache_valid(tag):
+            self.directory.mkdir(parents=True, exist_ok=True)
+            self._fetch_and_cache(tag)
 
         print("Excuses Cache up to date!")
 
