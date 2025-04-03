@@ -40,4 +40,4 @@ class Excuse:
         Returns:
             bool: True is the excuse is an FTBFS
         """
-        return len(self.missing_builds) > 0 or 'no-binaries' in self.reasons
+        return len(self.missing_builds) > 0
