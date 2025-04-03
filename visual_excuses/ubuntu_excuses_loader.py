@@ -35,7 +35,10 @@ class CachedExcuses:
                 f"Status code: {response.status_code}"
             )
 
-        etag = response.headers['etag']
+        etag = None
+        if "etag" in response.headers:
+            etag = response.headers['etag']
+
         if not etag:
             raise ValueError(f"ETag header missing from {self.url}")
         return etag
