@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests tabulate
+        pip install requests tabulate yaml
         pip install pytest pytest-cov
 
     - name: Run tests with coverage
