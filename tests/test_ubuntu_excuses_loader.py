@@ -132,7 +132,7 @@ def test_fetch_and_cache_downloads_and_writes_files(
     assert cache.yaml.read_bytes() == VALID_YAML
 
 
-def test_fetch_and_cache_fails_without_conenction(
+def test_fetch_and_cache_fails_without_connection(
         tmp_path, mock_requests_get):
 
     etag = "1234"
