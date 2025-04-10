@@ -6,7 +6,7 @@ from typing import List
 
 EXCUSE_REASON_COLORS = {
     "default": "#FFFFFF",
-    "": "#FFFFFF",
+    "unknown": "#FFFFFF",
     "autopkgtest": "#d4713b",
     "autopkgtest-depends": "#DBBF60",
     "missing-builds": "#CD6155",
@@ -103,14 +103,18 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
         # By now if the reason is still default, that means we are likely
         # facing packages blocked by another package, or that need to migrate
         # after another package or that have a block-bugs
+        depends = []
         if reason == "default":
             reason = "depends"
             if excuse.blocked_by:
-                # TODO create an edge between current and pkg
                 details += f"<br/> - Depends on {excuse.blocked_by}"
+                depends.append(excuse.blocked_by)
             elif excuse.migrate_after:
                 for pkg in excuse.migrate_after:
                     details += f"<br/> - Requires {pkg} to migrate"
+                    depends.append(pkg)
+            else:
+                reason = "unknown"
 
         # If there's an excuse bug, we display the excuse bug
         if excuse.block_bug:
@@ -118,12 +122,19 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
             details += f"<br/> - Block bug: #{lp_bug_link(bug)}"
 
         # Add the excuse to the graph
-        visual_excuses.add_node(
-            current,
-            label=current,
-            color=EXCUSE_REASON_COLORS[reason],
-            title=details
-        )
+        # The Node might have already been created as a depends
+        if current in visual_excuses.get_nodes():
+            visual_excuses.get_node(current)['title'] = details
+            visual_excuses.get_node(
+                current
+                )['color'] = EXCUSE_REASON_COLORS[reason]
+        else:
+            visual_excuses.add_node(
+                current,
+                label=current,
+                color=EXCUSE_REASON_COLORS[reason],
+                title=details
+            )
 
         # Link the excuse to the team appropriate team
         if teams.default_team(current):
@@ -134,19 +145,30 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
             pkg = failure[0]
             errors = failure[1]
             reason = "autopkgtest"
-            if pkg == current:
-                visual_excuses.get_node(current)['title'] += f"<br/>{errors}"
-                visual_excuses.get_node(
-                    current
-                    )['color'] = EXCUSE_REASON_COLORS[reason]
-            else:
+            if pkg not in visual_excuses.get_nodes():
                 visual_excuses.add_node(
                     pkg,
                     label=pkg,
                     color=EXCUSE_REASON_COLORS[reason],
                     title=errors
                 )
-            # We connect current package with its failed autopkgtest
-            visual_excuses.add_edge(current, pkg)
+                # We connect current package with its failed autopkgtest
+                visual_excuses.add_edge(current, pkg)
+            else:
+                visual_excuses.get_node(pkg)['title'] += f"<br/>{errors}"
+                visual_excuses.get_node(
+                    pkg
+                    )['color'] = EXCUSE_REASON_COLORS[reason]
+
+        # Creating link to depends
+        for dep_package in depends:
+            if dep_package not in visual_excuses.get_nodes():
+                visual_excuses.add_node(
+                    dep_package,
+                    label=dep_package,
+                    color=EXCUSE_REASON_COLORS["default"],
+                    title="Unknown"
+                )
+            visual_excuses.add_edge(current, dep_package)
 
     visual_excuses.show("excuses.html", notebook=False)
