@@ -25,4 +25,4 @@ def render_excuses_table(excuses: List[Excuse]) -> str:
         for e in excuses
     ]
 
-    return tabulate(rows, headers=headers, tablefmt="fancy_grid")
+    return tabulate(rows, headers=headers, tablefmt="fancy_outline")
