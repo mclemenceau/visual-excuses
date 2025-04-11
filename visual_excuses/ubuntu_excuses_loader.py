@@ -1,11 +1,11 @@
-import requests
 import lzma
-
 from pathlib import Path
 from typing import List, Optional
 
-from visual_excuses.excuse import Excuse
-from visual_excuses.yaml_parser import load_excuses
+import requests
+
+from .excuse import Excuse
+from .yaml_parser import load_excuses
 
 UBUNTU_EXCUSES_URL = (
     "https://people.canonical.com/~ubuntu-archive/proposed-migration/"
