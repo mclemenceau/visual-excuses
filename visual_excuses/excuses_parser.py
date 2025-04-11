@@ -1,4 +1,7 @@
 import argparse
+from pathlib import Path
+
+from .ubuntu_excuses_loader import DEFAULT_CACHE_DIR
 
 
 class ExcusesParser:
@@ -64,6 +67,15 @@ class ExcusesParser:
             "--json",
             action="store_true",
             help="Output in JSON format"
+        )
+
+        self.parser.add_argument(
+            "--cache-dir",
+            type=Path,
+            default=DEFAULT_CACHE_DIR,
+            metavar="DIR",
+            help="The directory under which to cache the excuses data "
+            "(default: %(default)s)"
         )
 
     def parse_args(self, argv=None):
