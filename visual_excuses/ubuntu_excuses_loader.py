@@ -33,11 +33,7 @@ class CachedExcuses:
     def _fetch_remote_etag(self) -> str:
         # Grab the latest online etag
         response = requests.head(self.url, allow_redirects=True)
-        if response.status_code != 200:
-            raise ConnectionError(
-                f"Failed to fetch etag from {self.url}. "
-                f"Status code: {response.status_code}"
-            )
+        response.raise_for_status()
 
         etag = None
         if "etag" in response.headers:
