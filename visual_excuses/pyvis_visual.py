@@ -19,8 +19,10 @@ EXCUSE_REASON_COLORS = {
 def lp_pkg_link(pkg: str) -> str:
     return f"<a href=https://pad.lv/u/{pkg}>{pkg} </a>"
 
+
 def lp_bug_link(bug: str) -> str:
     return f"<a href=https://bugs.launchpad.net/bugs/{bug}>{bug}</a>"
+
 
 def html_title(excuse: Excuse) -> str:
     """ libsepol (3.7-1 to 3.8-1) in proposed for 48 days """
@@ -49,7 +51,7 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
     active_teams = set(
         [teams.default_team(excuse.item_name) for excuse in excuses]
     )
-    
+
     for team in active_teams:
         if team:
             visual_excuses.add_node(
@@ -90,7 +92,7 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
         if autopkg_failures:
             details += "<br/> - Autopkgtest Regressions"
             reason = "autopkgtest-depends"
-        
+
         if not excuse.reasons:
             details += "<br/> - <b>candidate</b>"
             reason = "candidate"

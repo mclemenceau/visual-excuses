@@ -43,7 +43,7 @@ class CachedExcuses:
             raise ValueError(f"ETag header missing from {self.url}")
         return etag
 
-    def _is_cache_valid(self, etag: str) -> bool: 
+    def _is_cache_valid(self, etag: str) -> bool:
         """
         Check if the local cache is valid and if an excuse file is present
         """

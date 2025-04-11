@@ -26,5 +26,5 @@ class UbuntuTeamMapping:
 
     def default_team(self, package: str) -> str:
         # This function will return the first team subscribed
-        teams = self.get_teams(package) 
+        teams = self.get_teams(package)
         return teams[0] if teams else ""
