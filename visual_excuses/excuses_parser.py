@@ -42,12 +42,14 @@ class ExcusesParser:
         self.parser.add_argument(
             "--min-age",
             type=int,
+            metavar="DAYS",
             help="Only include packages at least this many days old"
         )
 
         self.parser.add_argument(
             "--max-age",
             type=int,
+            metavar="DAYS",
             help="Only include packages no older than this many days"
         )
 
