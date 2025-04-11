@@ -1,3 +1,4 @@
+import os
 import lzma
 from pathlib import Path
 from typing import List, Optional
@@ -11,6 +12,9 @@ UBUNTU_EXCUSES_URL = (
     "https://people.canonical.com/~ubuntu-archive/proposed-migration/"
     "/update_excuses.yaml.xz"
 )
+CACHE_HOME = os.environ.get('XDG_CACHE_HOME', '~/.cache')
+DEFAULT_CACHE_DIR = Path(CACHE_HOME).expanduser() / 'visual-excuses'
+del CACHE_HOME
 
 
 class CachedExcuses:
@@ -20,9 +24,9 @@ class CachedExcuses:
     CachedExcuses will only download new excuses if the version in the cached
     folder is outdated
     """
-    def __init__(self, url: str, cache_dir: Optional[Path] = None):
+    def __init__(self, url: str, cache_dir: Path):
         self.url = url
-        self.directory = cache_dir or Path.home() / ".excuses"
+        self.directory = cache_dir
         self.etag = self.directory / "ETag"
         self.yaml = self.directory / "excuse.yaml"
 
@@ -84,7 +88,10 @@ class CachedExcuses:
         print("Excuses Cache up to date!")
 
 
-def load_ubuntu_excuses(url: str = UBUNTU_EXCUSES_URL) -> List[Excuse]:
+def load_ubuntu_excuses(
+    url: str = UBUNTU_EXCUSES_URL,
+    cache_dir: Optional[Path] = DEFAULT_CACHE_DIR
+) -> List[Excuse]:
     """Fetches Ubuntu excuses YAML and parses it into Excuse objects.
 
     Args:
@@ -95,7 +102,7 @@ def load_ubuntu_excuses(url: str = UBUNTU_EXCUSES_URL) -> List[Excuse]:
         List[Excuse]: A list of parsed Excuse objects.
     """
     try:
-        cache = CachedExcuses(url)
+        cache = CachedExcuses(url, cache_dir)
 
         cache.update()
 
