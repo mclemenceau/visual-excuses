@@ -2,7 +2,6 @@ import pytest
 import lzma
 from unittest.mock import patch, Mock
 
-from visual_excuses.excuse import Excuse
 from visual_excuses.ubuntu_excuses_loader \
     import CachedExcuses, load_ubuntu_excuses
 
@@ -78,7 +77,7 @@ def test_fetch_remote_etag_raises_on_missing_etag(
     cache = CachedExcuses(url="http://notneeded.com", cache_dir=tmp_path)
 
     with pytest.raises(ValueError, match="ETag header missing from"):
-        cache._fetch_remote_etag()    
+        cache._fetch_remote_etag()
 
 
 def test_fetch_remote_etag_raises_on_http_error(
@@ -91,7 +90,7 @@ def test_fetch_remote_etag_raises_on_http_error(
     cache = CachedExcuses(url="http://notneeded.com", cache_dir=tmp_path)
 
     with pytest.raises(ConnectionError, match="Failed to fetch etag from"):
-        cache._fetch_remote_etag()    
+        cache._fetch_remote_etag()
 
 
 @pytest.fixture
@@ -220,5 +219,7 @@ def test_load_ubuntu_excuses_raises_runtime_error_on_failure():
         mock_instance = mock_class.return_value
         mock_instance.update.side_effect = Exception("Failure!")
 
-        with pytest.raises(RuntimeError, match="Couldn't process excuses.yaml.xz"):
+        with pytest.raises(
+            RuntimeError, match="Couldn't process excuses.yaml.xz"
+        ):
             load_ubuntu_excuses("url")

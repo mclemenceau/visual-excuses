@@ -1,6 +1,3 @@
-import pytest
-# from unittest.mock import patch, Mock
-
 from visual_excuses.excuse import Excuse
 
 

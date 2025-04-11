@@ -29,14 +29,15 @@ def load_excuses(file_path: str) -> List[Excuse]:
             .get('current-age')
         )
         excuse_bug = ""
-        for key in entry.get('policy_info', {}).get('update-excuse', {}).keys():
+        for key in entry.get(
+                'policy_info', {}).get('update-excuse', {}).keys():
             if key and key != "verdict":
                 excuse_bug = "LP: #" + key
         block_bug = ""
         for key in entry.get('policy_info', {}).get('block-bugs', {}).keys():
             if key and key != "verdict":
                 block_bug = "LP: #" + key
-        
+
         excuses_list.append(
             Excuse(
                 item_name=entry.get("item-name", ""),

@@ -1,4 +1,4 @@
-# ubuntu-excuses: simple command line tool allowing to manipulate current list 
+# ubuntu-excuses: simple command line tool allowing to manipulate current list
 # of packages stuck in the proposed pocket and not migrating to Ubuntu Devel
 
 from visual_excuses.ubuntu_excuses_loader import load_ubuntu_excuses
