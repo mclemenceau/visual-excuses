@@ -76,12 +76,6 @@ def load_ubuntu_excuses(
     Returns:
         List[Excuse]: A list of parsed Excuse objects.
     """
-    try:
-        cache = CachedExcuses(url, cache_dir)
-
-        cache.update()
-
-        return load_excuses(cache.yaml)
-
-    except Exception as e:
-        raise RuntimeError(f"Couldn't process excuses.yaml.xz. Exception: {e}")
+    cache = CachedExcuses(url, cache_dir)
+    cache.update()
+    return load_excuses(cache.yaml)
