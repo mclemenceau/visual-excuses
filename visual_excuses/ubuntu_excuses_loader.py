@@ -1,16 +1,22 @@
-import requests
+import os
 import lzma
-
 from pathlib import Path
 from typing import List, Optional
+from email.utils import formatdate
+from shutil import copyfileobj
 
-from visual_excuses.excuse import Excuse
-from visual_excuses.yaml_parser import load_excuses
+import requests
+
+from .excuse import Excuse
+from .yaml_parser import load_excuses
 
 UBUNTU_EXCUSES_URL = (
     "https://people.canonical.com/~ubuntu-archive/proposed-migration/"
     "/update_excuses.yaml.xz"
 )
+CACHE_HOME = os.environ.get('XDG_CACHE_HOME', '~/.cache')
+DEFAULT_CACHE_DIR = Path(CACHE_HOME).expanduser() / 'visual-excuses'
+del CACHE_HOME
 
 
 class CachedExcuses:
@@ -20,71 +26,47 @@ class CachedExcuses:
     CachedExcuses will only download new excuses if the version in the cached
     folder is outdated
     """
-    def __init__(self, url: str, cache_dir: Optional[Path] = None):
+    def __init__(self, url: str, cache_dir: Path):
         self.url = url
-        self.directory = cache_dir or Path.home() / ".excuses"
+        self.directory = cache_dir
         self.etag = self.directory / "ETag"
         self.yaml = self.directory / "excuse.yaml"
-
-    def _fetch_remote_etag(self) -> str:
-        # Grab the latest online etag
-        response = requests.head(self.url, allow_redirects=True)
-        if response.status_code != 200:
-            raise ConnectionError(
-                f"Failed to fetch etag from {self.url}. "
-                f"Status code: {response.status_code}"
-            )
-
-        etag = None
-        if "etag" in response.headers:
-            etag = response.headers['etag']
-
-        if not etag:
-            raise ValueError(f"ETag header missing from {self.url}")
-        return etag
-
-    def _is_cache_valid(self, etag: str) -> bool:
-        """
-        Check if the local cache is valid and if an excuse file is present
-        """
-        if not self.etag.exists() or not self.yaml.exists():
-            return False
-
-        return self.etag.read_text() == etag
-
-    def _fetch_and_cache(self, etag: str):
-        """
-        Download the latest excuse and cache them
-        """
-
-        print(f"Downloading {self.url}")
-        response = requests.get(self.url, timeout=10)
-
-        if response.status_code != 200:
-            raise ConnectionError(
-                f"Failed to fetch excuses from {self.url}. "
-                f"Status code: {response.status_code}"
-            )
-
-        decompressed_yaml = lzma.decompress(response.content)
-
-        self.yaml.write_bytes(decompressed_yaml)
-        self.etag.write_text(etag)
 
     def update(self):
         """
         Check of the local cache need to be updated based on the ETag value
         """
-        tag = self._fetch_remote_etag()
+        headers = {}
+        if self.etag.exists() and self.yaml.exists():
+            headers['ETag'] = self.etag.read_text()
+            headers['If-Modified-Since'] = formatdate(
+                self.yaml.stat().st_mtime, usegmt=True)
+        response = requests.get(
+            self.url, timeout=10, stream=True, headers=headers)
+        response.raise_for_status()
 
-        if not self._is_cache_valid(tag):
+        if response.status_code == 200:
+            print(f"Downloading {self.url}")
             self.directory.mkdir(parents=True, exist_ok=True)
-            self._fetch_and_cache(tag)
-
+            with (
+                lzma.LZMAFile(response.raw) as source,
+                self.yaml.open('wb') as target
+            ):
+                copyfileobj(source, target)
+            self.etag.write_text(response.headers['ETag'])
+        elif response.status_code == 304:
+            # Not changed according to ETag/If-Modified-Since
+            pass
+        else:
+            raise ValueError(
+                f'Unexpected HTTP response status {response.status_code}')
         print("Excuses Cache up to date!")
 
 
-def load_ubuntu_excuses(url: str = UBUNTU_EXCUSES_URL) -> List[Excuse]:
+def load_ubuntu_excuses(
+    url: str = UBUNTU_EXCUSES_URL,
+    cache_dir: Optional[Path] = DEFAULT_CACHE_DIR
+) -> List[Excuse]:
     """Fetches Ubuntu excuses YAML and parses it into Excuse objects.
 
     Args:
@@ -94,12 +76,6 @@ def load_ubuntu_excuses(url: str = UBUNTU_EXCUSES_URL) -> List[Excuse]:
     Returns:
         List[Excuse]: A list of parsed Excuse objects.
     """
-    try:
-        cache = CachedExcuses(url)
-
-        cache.update()
-
-        return load_excuses(cache.yaml)
-
-    except Exception as e:
-        raise RuntimeError(f"Couldn't process excuses.yaml.xz. Exception: {e}")
+    cache = CachedExcuses(url, cache_dir)
+    cache.update()
+    return load_excuses(cache.yaml)
