@@ -32,7 +32,8 @@ def test_cache_uncached(tmp_path, excuses_yaml):
         response.raise_for_status.return_value = None
         get.return_value = response
 
-        cache = CachedExcuses(f'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
+        cache = CachedExcuses(
+            'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
         assert not cache.etag.exists()
         assert not cache.yaml.exists()
         cache.update()
@@ -53,7 +54,8 @@ def test_cache_cached(tmp_path, excuses_yaml):
         response.raise_for_status.return_value = None
         get.return_value = response
 
-        cache = CachedExcuses(f'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
+        cache = CachedExcuses(
+            'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
         cache.etag.write_text('foo')
         cache.yaml.write_bytes(uncompressed)
         cache.update()
@@ -74,7 +76,8 @@ def test_cache_unexpected(tmp_path, excuses_yaml):
         response.raise_for_status.return_value = None
         get.return_value = response
 
-        cache = CachedExcuses(f'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
+        cache = CachedExcuses(
+            'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
         with pytest.raises(ValueError):
             cache.update()
 
@@ -91,7 +94,7 @@ def test_load_ubuntu_excuses(tmp_path, excuses_yaml):
         get.return_value = response
 
         excuses = load_ubuntu_excuses(
-            f'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
+            'http://example.com/excuses.yaml.xz', cache_dir=tmp_path)
         assert len(excuses) == 1
         assert excuses[0].component == 'universe'
         assert excuses[0].new_version == '1.1'
