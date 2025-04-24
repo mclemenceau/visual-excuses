@@ -43,7 +43,14 @@ class CachedExcuses:
                 self.yaml.stat().st_mtime, usegmt=True)
         response = requests.get(
             self.url, timeout=10, stream=True, headers=headers)
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            print(
+                "Error accessing excuses yaml data from server: "
+                f"{e.response.status_code} - {e.response.reason}"
+                )
+            return
 
         if response.status_code == 200:
             print(f"Downloading {self.url}")
@@ -78,4 +85,8 @@ def load_ubuntu_excuses(
     """
     cache = CachedExcuses(url, cache_dir)
     cache.update()
-    return load_excuses(cache.yaml)
+    try:
+        return load_excuses(cache.yaml)
+    except FileNotFoundError:
+        print("No excuse data to consume")
+        return []
