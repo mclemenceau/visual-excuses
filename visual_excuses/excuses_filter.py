@@ -24,6 +24,9 @@ def filter_excuses(excuses: List[Excuse], args, teams: UbuntuTeamMapping):
     if args.ftbfs:
         excuses = [e for e in excuses if e.ftbfs()]
 
+    if args.with_bugs:
+        excuses = [e for e in excuses if e.excuse_bug]
+
     if args.min_age is not None:
         excuses = [
             e for e in excuses if e.age is not None and e.age >= args.min_age
