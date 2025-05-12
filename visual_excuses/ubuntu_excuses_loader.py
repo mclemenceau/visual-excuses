@@ -42,8 +42,7 @@ class CachedExcuses:
             headers['If-None-Match'] = self.etag.read_text()
             headers['If-Modified-Since'] = formatdate(
                 self.yaml.stat().st_mtime, usegmt=True)
-        response = requests.get(
-            self.url, timeout=10, stream=True, headers=headers)
+        response = requests.head(self.url, timeout=10, headers=headers)
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
@@ -54,14 +53,18 @@ class CachedExcuses:
             return
 
         if response.status_code == 200:
-            print(f"Downloading {self.url}")
-            self.directory.mkdir(parents=True, exist_ok=True)
-            with (
-                lzma.LZMAFile(response.raw) as source,
-                self.yaml.open('wb') as target
-            ):
-                copyfileobj(source, target)
-            self.etag.write_text(response.headers['ETag'])
+            if response.headers['ETag'] != self.etag.read_text():
+                print(f"Downloading {self.url}")
+                response = requests.get(
+                    self.url, timeout=10, stream=True, headers=headers)
+                response.raise_for_status()
+                self.directory.mkdir(parents=True, exist_ok=True)
+                with (
+                    lzma.LZMAFile(response.raw) as source,
+                    self.yaml.open('wb') as target
+                ):
+                    copyfileobj(source, target)
+                self.etag.write_text(response.headers['ETag'])
         elif response.status_code == 304:
             # Not changed according to ETag/If-Modified-Since
             pass
