@@ -29,9 +29,9 @@ class CachedExcuses:
     """
     def __init__(self, url: str, cache_dir: Path):
         self.url = url
-        self.directory = cache_dir
-        self.etag = self.directory / "ETag"
-        self.yaml = self.directory / "excuse.yaml"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        self.etag = cache_dir / "excuse.yaml.etag"
+        self.yaml = cache_dir / "excuse.yaml"
 
     def update(self):
         """
@@ -58,7 +58,6 @@ class CachedExcuses:
                 response = requests.get(
                     self.url, timeout=10, stream=True, headers=headers)
                 response.raise_for_status()
-                self.directory.mkdir(parents=True, exist_ok=True)
                 with (
                     lzma.LZMAFile(response.raw) as source,
                     self.yaml.open('wb') as target
