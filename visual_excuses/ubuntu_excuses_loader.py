@@ -38,7 +38,7 @@ class CachedExcuses:
         """
         headers = {}
         if self.etag.exists() and self.yaml.exists():
-            headers['ETag'] = self.etag.read_text()
+            headers['If-None-Match'] = self.etag.read_text()
             headers['If-Modified-Since'] = formatdate(
                 self.yaml.stat().st_mtime, usegmt=True)
         response = requests.get(
