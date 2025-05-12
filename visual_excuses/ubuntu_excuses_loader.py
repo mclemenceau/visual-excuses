@@ -11,9 +11,10 @@ from .excuse import Excuse
 from .yaml_parser import load_excuses
 
 UBUNTU_EXCUSES_URL = (
-    "https://people.canonical.com/~ubuntu-archive/proposed-migration/"
-    "/update_excuses.yaml.xz"
+    "https://ubuntu-archive-team.ubuntu.com/proposed-migration/"
+    "update_excuses.yaml.xz"
 )
+
 CACHE_HOME = os.environ.get('XDG_CACHE_HOME', '~/.cache')
 DEFAULT_CACHE_DIR = Path(CACHE_HOME).expanduser() / 'visual-excuses'
 del CACHE_HOME
