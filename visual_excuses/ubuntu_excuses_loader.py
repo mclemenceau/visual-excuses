@@ -7,17 +7,9 @@ from shutil import copyfileobj
 
 import requests
 
+from .const import DEFAULT_CACHE_DIR, UBUNTU_EXCUSES_URL
 from .excuse import Excuse
 from .yaml_parser import load_excuses
-
-UBUNTU_EXCUSES_URL = (
-    "https://ubuntu-archive-team.ubuntu.com/proposed-migration/"
-    "update_excuses.yaml.xz"
-)
-
-CACHE_HOME = os.environ.get('XDG_CACHE_HOME', '~/.cache')
-DEFAULT_CACHE_DIR = Path(CACHE_HOME).expanduser() / 'visual-excuses'
-del CACHE_HOME
 
 
 class CachedExcuses:
