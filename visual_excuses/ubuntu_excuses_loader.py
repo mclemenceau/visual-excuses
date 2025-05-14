@@ -62,7 +62,6 @@ class CachedExcuses:
         else:
             raise ValueError(
                 f'Unexpected HTTP response status {response.status_code}')
-        print("Excuses Cache up to date!")
 
 
 def load_ubuntu_excuses(
