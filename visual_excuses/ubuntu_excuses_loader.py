@@ -45,7 +45,7 @@ class CachedExcuses:
             return
 
         if response.status_code == 200:
-            if response.headers['ETag'] != self.etag.read_text():
+            if response.headers['ETag'] != headers.get('If-None-Match', ''):
                 print(f"Downloading {self.url}")
                 response = requests.get(
                     self.url, timeout=10, stream=True, headers=headers)
