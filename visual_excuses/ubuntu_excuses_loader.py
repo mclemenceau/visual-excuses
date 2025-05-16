@@ -1,4 +1,3 @@
-import os
 import sys
 import lzma
 from pathlib import Path
@@ -20,7 +19,7 @@ class CachedExcuses:
     CachedExcuses will only download new excuses if the version in the cached
     folder is outdated
     """
-    def __init__(self, url: str, cache_dir: Path):
+    def __init__(self, url: str, cache_dir: Path = DEFAULT_CACHE_DIR):
         self.url = url
         cache_dir.mkdir(parents=True, exist_ok=True)
         self.etag = cache_dir / "excuse.yaml.etag"

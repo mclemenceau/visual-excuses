@@ -44,7 +44,7 @@ def test_init_failure_without_connection(tmp_path, mock_requests_get):
 
 
 def test_get_teams_returns_correct_teams_for_package(
-    tmp_path, mock_requests_get):
+        tmp_path, mock_requests_get):
 
     mock_response = Mock()
     mock_response.status_code = 200
@@ -89,7 +89,7 @@ def test_default_team_returns_first_team(tmp_path, mock_requests_get):
 
 
 def test_default_team_returns_empty_string_if_no_teams(
-    tmp_path, mock_requests_get):
+        tmp_path, mock_requests_get):
 
     mock_response = Mock()
     mock_response.status_code = 200

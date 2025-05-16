@@ -10,7 +10,7 @@ from .const import DEFAULT_CACHE_DIR, UBUNTU_TEAMS_MAPPING_URL
 
 
 class UbuntuTeamMapping:
-    def __init__(self, cache_dir: Path):
+    def __init__(self, cache_dir: Path = DEFAULT_CACHE_DIR):
         cache_dir.mkdir(parents=True, exist_ok=True)
         self.etag = cache_dir / "teams.json.etag"
         self.data = cache_dir / "teams.json"
