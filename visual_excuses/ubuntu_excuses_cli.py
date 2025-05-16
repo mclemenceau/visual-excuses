@@ -14,7 +14,7 @@ def main():
     args = parser.parse_args()
 
     excuses = load_ubuntu_excuses(cache_dir=args.cache_dir)
-    ubuntu_teams = UbuntuTeamMapping()
+    ubuntu_teams = UbuntuTeamMapping(cache_dir=args.cache_dir)
 
     excuses = filter_excuses(excuses, args, ubuntu_teams)
     if excuses:
