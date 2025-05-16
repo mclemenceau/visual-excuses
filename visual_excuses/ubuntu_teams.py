@@ -1,3 +1,4 @@
+import sys
 import json
 import requests
 from typing import List
@@ -30,7 +31,7 @@ class UbuntuTeamMapping:
         response.raise_for_status()
 
         if response.status_code == 200:
-            print(f"Downloading {UBUNTU_TEAMS_MAPPING_URL}")
+            print(f"Downloading {UBUNTU_TEAMS_MAPPING_URL}", file=sys.stderr)
             with self.data.open('wb') as target:
                 copyfileobj(response.raw, target)
             self.etag.write_text(response.headers['ETag'])

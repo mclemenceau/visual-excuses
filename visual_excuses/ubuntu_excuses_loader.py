@@ -1,4 +1,5 @@
 import os
+import sys
 import lzma
 from pathlib import Path
 from typing import List, Optional
@@ -40,13 +41,13 @@ class CachedExcuses:
         except requests.exceptions.HTTPError as e:
             print(
                 "Error accessing excuses yaml data from server: "
-                f"{e.response.status_code} - {e.response.reason}"
-                )
+                f"{e.response.status_code} - {e.response.reason}",
+                file=sys.stderr)
             return
 
         if response.status_code == 200:
             if response.headers['ETag'] != headers.get('If-None-Match', ''):
-                print(f"Downloading {self.url}")
+                print(f"Downloading {self.url}", file=sys.stderr)
                 response = requests.get(
                     self.url, timeout=10, stream=True, headers=headers)
                 response.raise_for_status()
@@ -82,5 +83,5 @@ def load_ubuntu_excuses(
     try:
         return load_excuses(cache.yaml)
     except FileNotFoundError:
-        print("No excuse data to consume")
+        print("No excuse data to consume", file=sys.stderr)
         return []
