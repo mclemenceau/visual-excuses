@@ -1,9 +1,7 @@
 import requests
 from typing import List
 
-UBUNTU_TEAMS_MAPPING_URL = (
-    "http://reqorts.qa.ubuntu.com/reports/m-r-package-team-mapping.json"
-)
+from .const import DEFAULT_CACHE_DIR, UBUNTU_TEAMS_MAPPING_URL
 
 
 class UbuntuTeamMapping:
