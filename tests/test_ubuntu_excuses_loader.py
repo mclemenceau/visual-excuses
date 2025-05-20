@@ -24,7 +24,15 @@ sources:
 def test_cache_uncached(tmp_path, excuses_yaml):
     compressed, uncompressed = excuses_yaml
 
-    with patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get:
+    with (
+        patch('visual_excuses.ubuntu_excuses_loader.requests.head') as head,
+        patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get
+    ):
+        response = Mock()
+        response.status_code = 200
+        response.headers = {'ETag': 'foo'}
+        response.raise_for_status.return_value = None
+        head.return_value = response
         response = Mock()
         response.status_code = 200
         response.headers = {'ETag': 'foo'}
@@ -46,7 +54,15 @@ def test_cache_uncached(tmp_path, excuses_yaml):
 def test_cache_cached(tmp_path, excuses_yaml):
     compressed, uncompressed = excuses_yaml
 
-    with patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get:
+    with (
+        patch('visual_excuses.ubuntu_excuses_loader.requests.head') as head,
+        patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get
+    ):
+        response = Mock()
+        response.status_code = 304
+        response.headers = {'ETag': 'foo'}
+        response.raise_for_status.return_value = None
+        head.return_value = response
         response = Mock()
         response.status_code = 304
         response.headers = {'ETag': 'foo'}
@@ -68,7 +84,15 @@ def test_cache_cached(tmp_path, excuses_yaml):
 def test_cache_unexpected(tmp_path, excuses_yaml):
     compressed, uncompressed = excuses_yaml
 
-    with patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get:
+    with (
+        patch('visual_excuses.ubuntu_excuses_loader.requests.head') as head,
+        patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get
+    ):
+        response = Mock()
+        response.status_code = 201
+        response.headers = {'ETag': 'foo'}
+        response.raise_for_status.return_value = None
+        head.return_value = response
         response = Mock()
         response.status_code = 201
         response.headers = {'ETag': 'foo'}
@@ -85,7 +109,15 @@ def test_cache_unexpected(tmp_path, excuses_yaml):
 def test_load_ubuntu_excuses(tmp_path, excuses_yaml):
     compressed, uncompressed = excuses_yaml
 
-    with patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get:
+    with (
+        patch('visual_excuses.ubuntu_excuses_loader.requests.head') as head,
+        patch('visual_excuses.ubuntu_excuses_loader.requests.get') as get
+    ):
+        response = Mock()
+        response.status_code = 200
+        response.headers = {'ETag': 'foo'}
+        response.raise_for_status.return_value = None
+        head.return_value = response
         response = Mock()
         response.status_code = 200
         response.headers = {'ETag': 'foo'}
