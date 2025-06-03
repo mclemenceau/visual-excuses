@@ -50,7 +50,7 @@ options:
   --inspect INSPECT     Get details about a specific package
   --name NAME           Regex to filter package names (case-insensitive)
   --component COMPONENT
-                        Archive component (main, restricted, universe, multivere)
+                        Archive component (main, restricted, universe, multiverse)
   --team TEAM           Show only packages subscribed by this Ubuntu team
   --ftbfs               Show only FTBFS packages
   --min-age MIN_AGE     Only include packages at least this many days old
