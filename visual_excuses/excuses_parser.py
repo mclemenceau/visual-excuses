@@ -24,7 +24,7 @@ class ExcusesParser:
         self.parser.add_argument(
             "--component",
             type=str,
-            help="Archive component (main, restricted, universe, multivere)"
+            help="Archive component (main, restricted, universe, multiverse)"
         )
 
         self.parser.add_argument(
