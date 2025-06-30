@@ -40,6 +40,12 @@ class ExcusesParser:
         )
 
         self.parser.add_argument(
+            "--missing-builds",
+            action="store_true",
+            help="Show which architectures didn't build"
+        )
+
+        self.parser.add_argument(
             "--with-bugs",
             action="store_true",
             help="Show only pacakges with associated excuse bugs"

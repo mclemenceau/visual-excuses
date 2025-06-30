@@ -3,7 +3,7 @@ from typing import List
 from tabulate import tabulate
 
 
-def render_excuses_table(excuses: List[Excuse]) -> str:
+def render_excuses_table(excuses: List[Excuse], args) -> str:
     """Render a list of Excuse objects as a table."""
 
     headers = [
@@ -13,16 +13,25 @@ def render_excuses_table(excuses: List[Excuse]) -> str:
             "New Version",
             "FTBFS",
             "Excuse Bug"]
-    rows = [
-        [
-            e.age,
-            e.item_name,
-            e.component,
-            e.new_version,
-            "✅" if e.ftbfs() else "",
-            e.excuse_bug
-        ]
-        for e in excuses
-    ]
+    rows = []
+
+    for e in excuses:
+        ftbfs_str = ""
+        if e.ftbfs():
+            if args.missing_builds:
+                ftbfs_str = e.missing_builds
+            else:
+                ftbfs_str = "✅"
+
+        rows.append(
+            [
+                e.age,
+                e.item_name,
+                e.component,
+                e.new_version,
+                ftbfs_str,
+                e.excuse_bug
+            ]
+        )
 
     return tabulate(rows, headers=headers, tablefmt="fancy_outline")

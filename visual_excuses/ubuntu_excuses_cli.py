@@ -18,7 +18,7 @@ def main():
 
     excuses = filter_excuses(excuses, args, ubuntu_teams)
     if excuses:
-        print(render_excuses_table(excuses))
+        print(render_excuses_table(excuses, args))
 
 
 if __name__ == "__main__":
