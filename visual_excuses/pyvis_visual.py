@@ -106,17 +106,16 @@ def visual_pyvis_excuses(excuses: List[Excuse], teams: UbuntuTeamMapping):
         # facing packages blocked by another package, or that need to migrate
         # after another package or that have a block-bugs
         depends = []
-        if reason == "default":
+        if excuse.blocked_by:
             reason = "depends"
-            if excuse.blocked_by:
-                details += f"<br/> - Depends on {excuse.blocked_by}"
-                depends.append(excuse.blocked_by)
-            elif excuse.migrate_after:
-                for pkg in excuse.migrate_after:
-                    details += f"<br/> - Requires {pkg} to migrate"
-                    depends.append(pkg)
-            else:
-                reason = "unknown"
+            details += f"<br/> - is blocked by {excuse.blocked_by}"
+            depends.append(excuse.blocked_by)
+
+        if excuse.migrate_after:
+            reason = "depends"
+            for pkg in excuse.migrate_after:
+                details += f"<br/> - requires {pkg} to migrate"
+                depends.append(pkg)
 
         # If there's an excuse bug, we display the excuse bug
         if excuse.block_bug:
