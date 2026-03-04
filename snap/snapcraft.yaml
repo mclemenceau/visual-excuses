@@ -1,6 +1,6 @@
 name: visual-excuses
 base: core24
-version: '0.9'
+version: '0.9.1'
 summary: Visual Graph Representation of Ubuntu Archive Proposed Migration Status
 description: Create dynamic relation graph representing proposed migration
 grade: stable
@@ -29,4 +29,5 @@ apps:
       - desktop
     environment:
       LANG: C.UTF-8
+      XDG_CACHE_HOME: $SNAP_USER_COMMON/.cache
 
