@@ -1,6 +1,7 @@
 from visual_excuses.excuse import Excuse
 from visual_excuses.ubuntu_teams import UbuntuTeamMapping
-from visual_excuses.table_visual import render_excuses_table, render_excuses_markdown
+from visual_excuses.table_visual import render_excuses_table, \
+    render_excuses_markdown
 
 from typing import List
 
