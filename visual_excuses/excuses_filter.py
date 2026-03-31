@@ -1,6 +1,7 @@
 from visual_excuses.excuse import Excuse
 from visual_excuses.ubuntu_teams import UbuntuTeamMapping
-from visual_excuses.table_visual import render_excuses_table
+from visual_excuses.table_visual import render_excuses_table, \
+    render_excuses_markdown
 
 from typing import List
 
@@ -66,9 +67,13 @@ def filter_excuses(excuses: List[Excuse], args, teams: UbuntuTeamMapping):
     if args.reverse:
         excuses.reverse()
 
-    # Visualization json / visual / cli
+    # Visualization json / markdown / visual / cli
     if args.json:
         print(json.dumps([e.__dict__ for e in excuses], indent=2))
+        return []
+
+    if args.md:
+        print(render_excuses_markdown(excuses, args))
         return []
 
     return excuses
