@@ -84,6 +84,12 @@ class ExcusesParser:
         )
 
         self.parser.add_argument(
+            "--md",
+            action="store_true",
+            help="Output as a Markdown table"
+        )
+
+        self.parser.add_argument(
             "--cache-dir",
             type=Path,
             default=DEFAULT_CACHE_DIR,

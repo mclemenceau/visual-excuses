@@ -35,3 +35,37 @@ def render_excuses_table(excuses: List[Excuse], args=None) -> str:
         )
 
     return tabulate(rows, headers=headers, tablefmt="fancy_outline")
+
+
+def render_excuses_markdown(excuses: List[Excuse], args=None) -> str:
+    """Render a list of Excuse objects as a Markdown table."""
+
+    headers = [
+            "Days",
+            "Package",
+            "Component",
+            "New Version",
+            "FTBFS",
+            "Excuse Bug"]
+    rows = []
+
+    for e in excuses:
+        ftbfs_str = ""
+        if e.ftbfs():
+            if args and args.missing_builds:
+                ftbfs_str = e.missing_builds
+            else:
+                ftbfs_str = "yes"
+
+        rows.append(
+            [
+                e.age,
+                e.item_name,
+                e.component,
+                e.new_version,
+                ftbfs_str,
+                e.excuse_bug
+            ]
+        )
+
+    return tabulate(rows, headers=headers, tablefmt="github")
