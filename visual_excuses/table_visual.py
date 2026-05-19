@@ -57,10 +57,14 @@ def render_excuses_markdown(excuses: List[Excuse], args=None) -> str:
             else:
                 ftbfs_str = "yes"
 
+        pkg_url = (
+            "https://ubuntu-archive-team.ubuntu.com/proposed-migration/"
+            f"update_excuses.html#{e.item_name}"
+        )
         rows.append(
             [
                 e.age,
-                e.item_name,
+                f"[{e.item_name}]({pkg_url})",
                 e.component,
                 e.new_version,
                 ftbfs_str,
