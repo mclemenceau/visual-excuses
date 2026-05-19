@@ -57,14 +57,22 @@ def render_excuses_markdown(excuses: List[Excuse], args=None) -> str:
             else:
                 ftbfs_str = "yes"
 
+        pkg_url = (
+            "https://ubuntu-archive-team.ubuntu.com/proposed-migration/"
+            f"update_excuses.html#{e.item_name}"
+        )
+        bug_str = (
+            f"[{e.excuse_bug}](https://bugs.launchpad.net/bugs/{e.excuse_bug})"
+            if e.excuse_bug else ""
+        )
         rows.append(
             [
                 e.age,
-                e.item_name,
+                f"[{e.item_name}]({pkg_url})",
                 e.component,
                 e.new_version,
                 ftbfs_str,
-                e.excuse_bug
+                bug_str
             ]
         )
 
